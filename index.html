@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Field Kit — Asset Catalog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <div class="site-title">
+          <span class="icon">🧰</span> Field Kit
+        </div>
+        <div class="site-subtitle">Searchable asset catalog for sales &amp; enablement teams</div>
+      </div>
+      <div class="header-actions">
+        <a href="#" id="propose-entry-btn" class="btn btn-primary" target="_blank" rel="noopener">
+          ＋ Propose Entry
+        </a>
+        <a href="#" id="repo-link" class="btn btn-outline" target="_blank" rel="noopener">
+          ↗ Repository
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Search & Filters ===== -->
+  <div class="toolbar">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Search packets by title, description, tags, or maintainer…" autocomplete="off">
+    </div>
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="filter-state">State</label>
+        <select id="filter-state">
+          <option value="">All States</option>
+          <option value="Published">Published</option>
+          <option value="Draft">Draft</option>
+          <option value="Archived">Archived</option>
+          <option value="Deprecated">Deprecated</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-discoverability">Access</label>
+        <select id="filter-discoverability">
+          <option value="">All Levels</option>
+          <option value="Public">Public</option>
+          <option value="Partner">Partner</option>
+          <option value="Named Partner">Named Partner</option>
+          <option value="Partner Tier">Partner Tier</option>
+          <option value="Internal">Internal</option>
+        </select>
+      </div>
+    </div>
+    <div id="active-filters" class="active-filters"></div>
+    <div id="results-summary" class="results-summary"></div>
+  </div>
+
+  <!-- ===== Main Content ===== -->
+  <main class="content-area">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h3>Industry</h3>
+        <ul id="sidebar-industry" class="sidebar-list"></ul>
+      </div>
+      <div class="sidebar-section">
+        <h3>Technical Domain</h3>
+        <ul id="sidebar-domain" class="sidebar-list"></ul>
+      </div>
+      <div class="sidebar-section">
+        <h3>Language</h3>
+        <ul id="sidebar-language" class="sidebar-list"></ul>
+      </div>
+      <div class="sidebar-section">
+        <h3>All Tags</h3>
+        <div id="tag-cloud" class="tag-cloud"></div>
+      </div>
+    </aside>
+
+    <!-- Packet Grid -->
+    <section id="packet-grid" class="packet-grid">
+      <!-- Rendered by JS -->
+    </section>
+  </main>
+
+  <!-- ===== Detail Modal ===== -->
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal" id="modal-content">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <p>Field Kit &mdash; Asset Catalog &bull; Powered by GitHub Pages</p>
+  </footer>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

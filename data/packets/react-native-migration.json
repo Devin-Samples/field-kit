@@ -1,0 +1,51 @@
+{
+  "id": "react-native-migration",
+  "title": "React Native to Expo Migration",
+  "description": "Guide and lab for migrating bare React Native projects to Expo managed workflow using Devin. Includes handling native modules, navigation libraries, and build configuration.",
+  "maintainer": "solutions-engineering",
+  "created": "2026-02-28",
+  "updated": "2026-03-15",
+  "publishState": "Draft",
+  "discoverability": "Internal",
+  "tags": {
+    "industry": ["Technology", "Retail", "Media"],
+    "productLine": ["Devin"],
+    "thirdPartySoftware": ["Expo", "React Navigation"],
+    "language": ["TypeScript", "JavaScript"],
+    "technicalDomain": ["Migration", "Mobile Development"],
+    "custom": ["react-native", "expo", "mobile"]
+  },
+  "resources": {
+    "labPackage": {
+      "cognitionEnv": [
+        {
+          "title": "Bare RN Sample App",
+          "type": "github-repo",
+          "url": "https://github.com/cognition-labs/rn-bare-sample",
+          "description": "Sample React Native bare workflow app to be migrated",
+          "access": "protected"
+        }
+      ],
+      "customerEnv": []
+    },
+    "setupGuide": [
+      {
+        "title": "Migration Playbook",
+        "type": "google-doc",
+        "url": "https://docs.google.com/document/d/example-rn-migration",
+        "description": "Step-by-step migration playbook with Devin prompts",
+        "access": "protected"
+      }
+    ],
+    "media": [
+      {
+        "title": "RN to Expo Migration Demo",
+        "type": "video",
+        "url": "https://drive.google.com/file/d/example-rn-demo",
+        "description": "10-minute demo of the migration process",
+        "access": "protected",
+        "mediaType": "Demo"
+      }
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "id": "devin-jira-integration-lab",
+  "title": "Devin + Jira Integration Lab",
+  "description": "End-to-end lab demonstrating how Devin integrates with Jira for automated ticket triage, code generation from tickets, and PR creation. Includes both Cognition-hosted and customer-hosted environment guides.",
+  "maintainer": "enablement-team",
+  "created": "2026-02-15",
+  "updated": "2026-04-01",
+  "publishState": "Published",
+  "discoverability": "Partner",
+  "tags": {
+    "industry": ["Technology", "Financial Services"],
+    "productLine": ["Devin"],
+    "thirdPartySoftware": ["Jira", "GitHub"],
+    "language": ["Python", "TypeScript"],
+    "technicalDomain": ["Integration", "Automation"],
+    "custom": ["ticketing", "workflow"]
+  },
+  "resources": {
+    "labPackage": {
+      "cognitionEnv": [
+        {
+          "title": "Jira Integration Demo Repo",
+          "type": "github-repo",
+          "url": "https://github.com/cognition-labs/jira-integration-demo",
+          "description": "Pre-configured repo with Jira webhook handlers and Devin triggers",
+          "access": "protected"
+        }
+      ],
+      "customerEnv": [
+        {
+          "title": "Customer Setup Repo (Fork Template)",
+          "type": "github-repo",
+          "url": "https://github.com/cognition-labs/jira-lab-template",
+          "description": "Template repo customers fork to set up their own environment",
+          "access": "protected"
+        }
+      ]
+    },
+    "setupGuide": [
+      {
+        "title": "Jira Integration Setup Guide",
+        "type": "google-doc",
+        "url": "https://docs.google.com/document/d/example-jira-setup",
+        "description": "Step-by-step guide for configuring Jira + Devin in customer environment",
+        "access": "protected"
+      }
+    ],
+    "media": [
+      {
+        "title": "Jira Integration Demo Walkthrough",
+        "type": "video",
+        "url": "https://www.youtube.com/watch?v=example1",
+        "description": "5-minute demo showing ticket-to-PR flow",
+        "access": "public",
+        "mediaType": "Demo"
+      },
+      {
+        "title": "Architecture Explanation",
+        "type": "video",
+        "url": "https://drive.google.com/file/d/example2",
+        "description": "Deep dive into the webhook architecture and Devin session orchestration",
+        "access": "protected",
+        "mediaType": "Explanation"
+      }
+    ]
+  }
+}

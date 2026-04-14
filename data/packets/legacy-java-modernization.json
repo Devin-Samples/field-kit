@@ -1,0 +1,81 @@
+{
+  "id": "legacy-java-modernization",
+  "title": "Legacy Java Modernization Workshop",
+  "description": "Workshop packet for modernizing legacy Java applications using Devin. Covers migrating from Java 8 to Java 21, Spring Boot upgrades, and converting monoliths to microservices with AI-assisted refactoring.",
+  "maintainer": "solutions-engineering",
+  "created": "2026-01-10",
+  "updated": "2026-03-20",
+  "publishState": "Published",
+  "discoverability": "Public",
+  "tags": {
+    "industry": ["Financial Services", "Insurance", "Enterprise"],
+    "productLine": ["Devin"],
+    "thirdPartySoftware": ["Maven", "Gradle", "Spring Boot"],
+    "language": ["Java"],
+    "technicalDomain": ["Modernization", "Migration", "Refactoring"],
+    "custom": ["java-migration", "spring-boot", "microservices"]
+  },
+  "resources": {
+    "labPackage": {
+      "cognitionEnv": [
+        {
+          "title": "Legacy Monolith Sample App",
+          "type": "github-repo",
+          "url": "https://github.com/cognition-labs/legacy-java-monolith",
+          "description": "Java 8 monolith app used as the starting point for the modernization lab",
+          "access": "public"
+        },
+        {
+          "title": "Modernized Microservices Result",
+          "type": "github-repo",
+          "url": "https://github.com/cognition-labs/modernized-java-services",
+          "description": "Target-state microservices architecture after Devin-assisted modernization",
+          "access": "public"
+        }
+      ],
+      "customerEnv": [
+        {
+          "title": "Customer Workshop Starter Kit",
+          "type": "github-repo",
+          "url": "https://github.com/cognition-labs/java-modernization-starter",
+          "description": "Starter template with pre-configured Devin playbooks for Java modernization",
+          "access": "protected"
+        }
+      ]
+    },
+    "setupGuide": [
+      {
+        "title": "Workshop Facilitator Guide",
+        "type": "google-doc",
+        "url": "https://docs.google.com/document/d/example-java-facilitator",
+        "description": "Complete facilitator guide with talking points and timing",
+        "access": "protected"
+      },
+      {
+        "title": "Participant Workbook",
+        "type": "html",
+        "url": "https://cognition-labs.github.io/java-modernization-workbook",
+        "description": "Interactive workbook for workshop participants",
+        "access": "public"
+      }
+    ],
+    "media": [
+      {
+        "title": "Java Modernization with Devin - Full Demo",
+        "type": "video",
+        "url": "https://www.youtube.com/watch?v=example-java-demo",
+        "description": "20-minute end-to-end demo of the modernization workflow",
+        "access": "public",
+        "mediaType": "Demo"
+      },
+      {
+        "title": "Environment Setup Walkthrough",
+        "type": "video",
+        "url": "https://drive.google.com/file/d/example-java-setup",
+        "description": "How to configure the customer environment for the workshop",
+        "access": "protected",
+        "mediaType": "Setup"
+      }
+    ]
+  }
+}

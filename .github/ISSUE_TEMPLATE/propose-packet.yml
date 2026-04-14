@@ -1,0 +1,139 @@
+name: "📦 Propose a New Packet"
+description: "Submit a new asset packet to the Field Kit catalog"
+title: "[Packet] "
+labels: ["new-packet", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Propose a New Packet
+        Fill out the fields below to submit a new asset packet for the Field Kit catalog.
+        A maintainer will review and convert this into a catalog entry.
+
+  - type: input
+    id: title
+    attributes:
+      label: Packet Title
+      description: A clear, descriptive name for this packet
+      placeholder: "e.g., Devin + Jira Integration Lab"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What does this packet contain? Who is the target audience?
+      placeholder: "Describe the purpose, scope, and intended audience..."
+    validations:
+      required: true
+
+  - type: input
+    id: maintainer
+    attributes:
+      label: Maintainer
+      description: GitHub username or team responsible for this packet
+      placeholder: "@username or team-name"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: publish-state
+    attributes:
+      label: Publish State
+      options:
+        - Draft
+        - Published
+    validations:
+      required: true
+
+  - type: dropdown
+    id: discoverability
+    attributes:
+      label: Discoverability Level
+      description: Who should be able to find this packet?
+      options:
+        - Public
+        - Partner
+        - Named Partner
+        - Partner Tier
+        - Internal
+    validations:
+      required: true
+
+  - type: input
+    id: industry
+    attributes:
+      label: Industry Tags
+      description: Comma-separated industry verticals
+      placeholder: "e.g., Financial Services, Healthcare, Retail"
+
+  - type: input
+    id: product-line
+    attributes:
+      label: Product Line Tags
+      description: Comma-separated product lines
+      placeholder: "e.g., Devin"
+
+  - type: input
+    id: third-party-software
+    attributes:
+      label: Third-Party Software Tags
+      description: Comma-separated third-party tools/platforms
+      placeholder: "e.g., Jira, Salesforce, GitHub Actions"
+
+  - type: input
+    id: language
+    attributes:
+      label: Language Tags
+      description: Comma-separated programming languages
+      placeholder: "e.g., Python, TypeScript, Java"
+
+  - type: input
+    id: technical-domain
+    attributes:
+      label: Technical Domain Tags
+      description: Comma-separated technical domains
+      placeholder: "e.g., Modernization, Migration, Testing, CI/CD"
+
+  - type: input
+    id: custom-tags
+    attributes:
+      label: Additional Tags
+      description: Any other freeform tags (comma-separated)
+      placeholder: "e.g., microservices, workflow, code-quality"
+
+  - type: textarea
+    id: lab-package
+    attributes:
+      label: "Lab Package Resources"
+      description: "List any DIY lab assets — repos, executables, logins, templates. Note whether each is for Cognition Env or Customer Env."
+      placeholder: |
+        Cognition Env:
+        - [Repo Name](https://github.com/org/repo) — Description (public/protected)
+
+        Customer Env:
+        - [Template Repo](https://github.com/org/template) — Description (public/protected)
+
+  - type: textarea
+    id: setup-guide
+    attributes:
+      label: "Setup / Technical Guide Resources"
+      description: "Links to setup guides, user guides, facilitator docs"
+      placeholder: |
+        - [Guide Title](https://docs.google.com/...) — Description (public/protected)
+
+  - type: textarea
+    id: media
+    attributes:
+      label: "Audio / Video Resources"
+      description: "Links to demos, explanations, setup walkthroughs. Note type: Demo, Explanation, or Setup."
+      placeholder: |
+        - [Demo Video](https://youtube.com/...) — Demo — Description (public/protected)
+        - [Devin Session](https://app.devin.ai/sessions/...) — Demo — Description (protected)
+
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Anything else reviewers should know?

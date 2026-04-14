@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Packet",
+  "description": "A single entry in the Portfolio Catalog / Enablement Library",
+  "type": "object",
+  "required": ["id", "title", "description", "publishState", "discoverability", "tags", "resources"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier (kebab-case slug)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable title of the packet"
+    },
+    "description": {
+      "type": "string",
+      "description": "Summary of what this packet contains and its purpose"
+    },
+    "maintainer": {
+      "type": "string",
+      "description": "GitHub username or team responsible for this packet"
+    },
+    "created": {
+      "type": "string",
+      "format": "date",
+      "description": "Date this packet was created (YYYY-MM-DD)"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date",
+      "description": "Date this packet was last updated (YYYY-MM-DD)"
+    },
+    "publishState": {
+      "type": "string",
+      "enum": ["Draft", "Published", "Archived", "Deprecated"],
+      "description": "Current lifecycle state of the packet"
+    },
+    "discoverability": {
+      "type": "string",
+      "enum": ["Internal", "Partner", "Named Partner", "Partner Tier", "Public"],
+      "description": "Visibility / access level for this packet"
+    },
+    "tags": {
+      "type": "object",
+      "description": "Categorization tags for search and filtering",
+      "properties": {
+        "industry": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Industry verticals (e.g., Finance, Healthcare, Retail)"
+        },
+        "productLine": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Product lines this packet relates to"
+        },
+        "thirdPartySoftware": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Third-party software integrations (e.g., Jira, Salesforce)"
+        },
+        "language": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Programming languages (e.g., Python, TypeScript, Java)"
+        },
+        "technicalDomain": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Technical domains (e.g., Modernization, Migration, Testing)"
+        },
+        "custom": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Additional freeform tags"
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "description": "Links to assets associated with this packet",
+      "properties": {
+        "labPackage": {
+          "type": "object",
+          "description": "DIY Lab Package assets",
+          "properties": {
+            "cognitionEnv": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/resource" },
+              "description": "Assets for the Cognition environment"
+            },
+            "customerEnv": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/resource" },
+              "description": "Assets for the Customer environment"
+            }
+          }
+        },
+        "setupGuide": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/resource" },
+          "description": "Setup / Technical User Guide documents"
+        },
+        "media": {
+          "type": "array",
+          "items": {
+            "allOf": [{ "$ref": "#/definitions/resource" }],
+            "properties": {
+              "mediaType": {
+                "type": "string",
+                "enum": ["Demo", "Explanation", "Setup"],
+                "description": "Category of audio/video content"
+              }
+            }
+          },
+          "description": "Audio and video assets (demos, explanations, setup walkthroughs)"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "resource": {
+      "type": "object",
+      "required": ["title", "type", "url"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Display name of the resource"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["github-repo", "html", "devin-session", "google-doc", "video", "notion", "other"],
+          "description": "Type of external resource"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to the resource"
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief description of this specific resource"
+        },
+        "access": {
+          "type": "string",
+          "enum": ["public", "protected"],
+          "description": "Whether this resource is publicly accessible or requires auth"
+        }
+      }
+    }
+  }
+}
