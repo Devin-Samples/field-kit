@@ -1,9 +1,17 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Packet",
-  "description": "A single entry in the Portfolio Catalog / Enablement Library",
+  "description": "A single entry in the Field Kit catalog",
   "type": "object",
-  "required": ["id", "title", "description", "publishState", "discoverability", "tags", "resources"],
+  "required": [
+    "id",
+    "title",
+    "description",
+    "packetType",
+    "publishState",
+    "discoverability",
+    "tags"
+  ],
   "properties": {
     "id": {
       "type": "string",
@@ -12,6 +20,17 @@
     "title": {
       "type": "string",
       "description": "Human-readable title of the packet"
+    },
+    "packetType": {
+      "type": "string",
+      "description": "The type of packet (e.g., Hands On Lab). Determines issue template and display.",
+      "examples": [
+        "Hands On Lab"
+      ]
+    },
+    "issueTemplate": {
+      "type": "string",
+      "description": "Filename of the GitHub Issue template for proposing this packet type"
     },
     "description": {
       "type": "string",
@@ -23,98 +42,138 @@
     },
     "created": {
       "type": "string",
-      "format": "date",
-      "description": "Date this packet was created (YYYY-MM-DD)"
+      "format": "date"
     },
     "updated": {
       "type": "string",
-      "format": "date",
-      "description": "Date this packet was last updated (YYYY-MM-DD)"
+      "format": "date"
     },
     "publishState": {
       "type": "string",
-      "enum": ["Draft", "Published", "Archived", "Deprecated"],
-      "description": "Current lifecycle state of the packet"
+      "enum": [
+        "Draft",
+        "Published",
+        "Archived",
+        "Deprecated"
+      ]
     },
     "discoverability": {
       "type": "string",
-      "enum": ["Internal", "Partner", "Named Partner", "Partner Tier", "Public"],
-      "description": "Visibility / access level for this packet"
+      "enum": [
+        "Internal",
+        "Partner",
+        "Public"
+      ]
     },
     "tags": {
       "type": "object",
-      "description": "Categorization tags for search and filtering",
       "properties": {
         "industry": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "Industry verticals (e.g., Finance, Healthcare, Retail)"
+          "items": {
+            "type": "string"
+          }
         },
         "productLine": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "Product lines this packet relates to"
+          "items": {
+            "type": "string"
+          }
         },
         "thirdPartySoftware": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "Third-party software integrations (e.g., Jira, Salesforce)"
+          "items": {
+            "type": "string"
+          }
         },
         "language": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "Programming languages (e.g., Python, TypeScript, Java)"
+          "items": {
+            "type": "string"
+          }
         },
         "technicalDomain": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "Technical domains (e.g., Modernization, Migration, Testing)"
+          "items": {
+            "type": "string"
+          }
         },
         "custom": {
           "type": "array",
-          "items": { "type": "string" },
-          "description": "Additional freeform tags"
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "contentGroups": {
+      "type": "array",
+      "description": "Groups of content items that can be dynamically loaded",
+      "items": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Display name of this content group"
+          },
+          "description": {
+            "type": "string"
+          },
+          "sourceUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to fetch content from (e.g., raw GitHub README)"
+          },
+          "baseUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Base URL for resolving relative links"
+          },
+          "parser": {
+            "type": "string",
+            "enum": [
+              "markdown-table",
+              "directory-list"
+            ],
+            "description": "How to parse the fetched content"
+          }
         }
       }
     },
     "resources": {
       "type": "object",
-      "description": "Links to assets associated with this packet",
       "properties": {
         "labPackage": {
           "type": "object",
-          "description": "DIY Lab Package assets",
           "properties": {
             "cognitionEnv": {
               "type": "array",
-              "items": { "$ref": "#/definitions/resource" },
-              "description": "Assets for the Cognition environment"
+              "items": {
+                "$ref": "#/definitions/resource"
+              }
             },
             "customerEnv": {
               "type": "array",
-              "items": { "$ref": "#/definitions/resource" },
-              "description": "Assets for the Customer environment"
+              "items": {
+                "$ref": "#/definitions/resource"
+              }
             }
           }
         },
         "setupGuide": {
           "type": "array",
-          "items": { "$ref": "#/definitions/resource" },
-          "description": "Setup / Technical User Guide documents"
+          "items": {
+            "$ref": "#/definitions/resource"
+          }
         },
         "media": {
           "type": "array",
           "items": {
-            "allOf": [{ "$ref": "#/definitions/resource" }],
-            "properties": {
-              "mediaType": {
-                "type": "string",
-                "enum": ["Demo", "Explanation", "Setup"],
-                "description": "Category of audio/video content"
-              }
-            }
-          },
-          "description": "Audio and video assets (demos, explanations, setup walkthroughs)"
+            "$ref": "#/definitions/resource"
+          }
         }
       }
     }
@@ -122,30 +181,40 @@
   "definitions": {
     "resource": {
       "type": "object",
-      "required": ["title", "type", "url"],
+      "required": [
+        "title",
+        "type",
+        "url"
+      ],
       "properties": {
         "title": {
-          "type": "string",
-          "description": "Display name of the resource"
+          "type": "string"
         },
         "type": {
           "type": "string",
-          "enum": ["github-repo", "html", "devin-session", "google-doc", "video", "notion", "other"],
-          "description": "Type of external resource"
+          "enum": [
+            "github-repo",
+            "html",
+            "devin-session",
+            "google-doc",
+            "video",
+            "notion",
+            "other"
+          ]
         },
         "url": {
           "type": "string",
-          "format": "uri",
-          "description": "URL to the resource"
+          "format": "uri"
         },
         "description": {
-          "type": "string",
-          "description": "Brief description of this specific resource"
+          "type": "string"
         },
         "access": {
           "type": "string",
-          "enum": ["public", "protected"],
-          "description": "Whether this resource is publicly accessible or requires auth"
+          "enum": [
+            "public",
+            "protected"
+          ]
         }
       }
     }

@@ -3,40 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Field Kit — Asset Catalog</title>
+  <title>Field Kit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2699;</text></svg>">
 </head>
 <body>
 
-  <!-- ===== Header ===== -->
   <header class="site-header">
     <div class="header-inner">
-      <div>
-        <div class="site-title">
-          <span class="icon">🧰</span> Field Kit
-        </div>
-        <div class="site-subtitle">Searchable asset catalog for sales &amp; enablement teams</div>
+      <div class="site-brand">
+        <svg class="site-logo" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M30 5L5 17.5v25L30 55l25-12.5v-25L30 5z" stroke="#00d4aa" stroke-width="3" fill="none"/>
+          <path d="M20 25h20M20 30h15M20 35h20" stroke="#fcfcfc" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="site-title">Field Kit</span>
+        <span class="site-divider"></span>
+        <span class="site-subtitle">Asset catalog for sales &amp; enablement</span>
       </div>
       <div class="header-actions">
-                <a href="https://github.com/Devin-Samples/field-kit/issues/new?template=propose-packet.yml" id="propose-entry-btn" class="btn btn-primary" target="_blank" rel="noopener">
-                  ＋ Propose Entry
-                </a>
-                <a href="https://github.com/Devin-Samples/field-kit" id="repo-link" class="btn btn-outline" target="_blank" rel="noopener">
-                  ↗ Repository
-                </a>
+        <div class="btn-dropdown-wrap">
+          <button class="btn btn-primary" id="propose-entry-btn">+ Propose Entry</button>
+          <div class="btn-dropdown-menu" id="propose-dropdown">
+            <!-- Populated dynamically based on packet types -->
+          </div>
+        </div>
+        <a href="https://github.com/Devin-Samples/field-kit" class="btn btn-outline" target="_blank" rel="noopener">Repository</a>
       </div>
     </div>
   </header>
 
-  <!-- ===== Search & Filters ===== -->
   <div class="toolbar">
     <div class="search-bar">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="search-input" placeholder="Search packets by title, description, tags, or maintainer…" autocomplete="off">
+      <span class="search-icon">&#x1F50D;</span>
+      <input type="text" id="search-input" placeholder="Search packets by title, description, tags, or type..." autocomplete="off">
     </div>
     <div class="filter-row">
       <div class="filter-group">
@@ -46,7 +48,6 @@
           <option value="Published">Published</option>
           <option value="Draft">Draft</option>
           <option value="Archived">Archived</option>
-          <option value="Deprecated">Deprecated</option>
         </select>
       </div>
       <div class="filter-group">
@@ -55,9 +56,13 @@
           <option value="">All Levels</option>
           <option value="Public">Public</option>
           <option value="Partner">Partner</option>
-          <option value="Named Partner">Named Partner</option>
-          <option value="Partner Tier">Partner Tier</option>
           <option value="Internal">Internal</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-type">Type</label>
+        <select id="filter-type">
+          <option value="">All Types</option>
         </select>
       </div>
     </div>
@@ -65,10 +70,12 @@
     <div id="results-summary" class="results-summary"></div>
   </div>
 
-  <!-- ===== Main Content ===== -->
   <main class="content-area">
-    <!-- Sidebar -->
     <aside class="sidebar">
+      <div class="sidebar-section">
+        <h3>Packet Type</h3>
+        <ul id="sidebar-type" class="sidebar-list"></ul>
+      </div>
       <div class="sidebar-section">
         <h3>Industry</h3>
         <ul id="sidebar-industry" class="sidebar-list"></ul>
@@ -78,31 +85,20 @@
         <ul id="sidebar-domain" class="sidebar-list"></ul>
       </div>
       <div class="sidebar-section">
-        <h3>Language</h3>
-        <ul id="sidebar-language" class="sidebar-list"></ul>
-      </div>
-      <div class="sidebar-section">
         <h3>All Tags</h3>
         <div id="tag-cloud" class="tag-cloud"></div>
       </div>
     </aside>
 
-    <!-- Packet Grid -->
-    <section id="packet-grid" class="packet-grid">
-      <!-- Rendered by JS -->
-    </section>
+    <section id="packet-grid" class="packet-grid"></section>
   </main>
 
-  <!-- ===== Detail Modal ===== -->
   <div id="modal-overlay" class="modal-overlay">
-    <div class="modal" id="modal-content">
-      <!-- Rendered by JS -->
-    </div>
+    <div class="modal" id="modal-content"></div>
   </div>
 
-  <!-- ===== Footer ===== -->
   <footer class="site-footer">
-    <p>Field Kit &mdash; Asset Catalog &bull; Powered by GitHub Pages</p>
+    <p>Field Kit &mdash; <a href="https://devin.ai" target="_blank">Powered by Devin</a></p>
   </footer>
 
   <script src="assets/js/app.js"></script>
