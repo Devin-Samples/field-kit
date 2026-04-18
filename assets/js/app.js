@@ -16,6 +16,9 @@
   // Cache for fetched remote content
   const contentCache = {};
 
+  // Modal generation counter to prevent race conditions
+  let modalGeneration = 0;
+
   let $searchInput, $stateFilter, $discoverFilter, $typeFilter, $packetGrid,
       $activeFilters, $resultsSummary, $modalOverlay, $modalContent,
       $sidebarIndustry, $sidebarDomain, $sidebarType, $tagCloud,
@@ -182,7 +185,9 @@
           activeFilters.packetType = activeFilters.packetType === li.dataset.value ? '' : li.dataset.value;
           $typeFilter.value = activeFilters.packetType;
         } else {
-          toggleTag(li.dataset.value);
+          const idx = activeFilters.tags.indexOf(li.dataset.value);
+          if (idx === -1) activeFilters.tags.push(li.dataset.value);
+          else activeFilters.tags.splice(idx, 1);
         }
         buildSidebar();
         applyFilters();
@@ -364,6 +369,9 @@
     const packet = allPackets.find(p => p.id === packetId);
     if (!packet) return;
 
+    // Increment generation to invalidate any pending async loads
+    const currentGeneration = ++modalGeneration;
+
     const stateBadge = badgeClass(packet.publishState);
     const discBadge = discoverabilityBadge(packet.discoverability);
 
@@ -451,13 +459,13 @@
     // Load dynamic content groups
     if (packet.contentGroups) {
       packet.contentGroups.forEach((group, idx) => {
-        loadContentGroup(group, 'content-group-' + idx);
+        loadContentGroup(group, 'content-group-' + idx, currentGeneration);
       });
     }
   }
 
   // --- Dynamic content loading ---
-  async function loadContentGroup(group, groupId) {
+  async function loadContentGroup(group, groupId, generation) {
     const $items = document.getElementById(groupId + '-items');
     const $count = document.getElementById(groupId + '-count');
 
@@ -469,6 +477,7 @@
 
     // Check cache
     if (contentCache[group.sourceUrl]) {
+      if (generation !== modalGeneration) return;
       renderContentItems($items, $count, contentCache[group.sourceUrl], group);
       return;
     }
@@ -478,9 +487,12 @@
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const text = await resp.text();
       contentCache[group.sourceUrl] = text;
+      // Check if modal is still showing the same content
+      if (generation !== modalGeneration) return;
       renderContentItems($items, $count, text, group);
     } catch (err) {
       console.error('Failed to load content group:', err);
+      if (generation !== modalGeneration) return;
       $items.innerHTML = `<div class="loading-spinner">Failed to load content. <a href="${esc(group.sourceUrl)}" target="_blank" style="color:var(--color-accent)">View source</a></div>`;
       $count.textContent = 'error';
     }
@@ -559,7 +571,7 @@
             <a href="${esc(r.url)}" target="_blank" rel="noopener" class="resource-title">${esc(r.title)}</a>
             ${r.description ? `<div class="resource-desc">${esc(r.description)}</div>` : ''}
           </div>
-          <span class="resource-access ${accessClass}">${accessClass}</span>
+          <span class="resource-access ${esc(accessClass)}">${esc(accessClass)}</span>
         </li>`;
     });
     html += `</ul></div>`;
