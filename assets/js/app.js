@@ -3,6 +3,10 @@
 (function () {
   'use strict';
 
+  // Draft access: only viewers with ?token=<DRAFT_TOKEN> can see Draft packets
+  const DRAFT_TOKEN = 'fieldkit-drafts-2026';
+  const isDraftViewer = new URLSearchParams(window.location.search).get('token') === DRAFT_TOKEN;
+
   let allPackets = [];
   let filteredPackets = [];
   let activeFilters = {
@@ -38,6 +42,11 @@
   document.addEventListener('DOMContentLoaded', async () => {
     cacheDom();
     bindEvents();
+    // Hide Draft filter option for non-token visitors
+    if (!isDraftViewer) {
+      const draftOpt = $stateFilter.querySelector('option[value="Draft"]');
+      if (draftOpt) draftOpt.remove();
+    }
     await loadPackets();
     buildSidebar();
     buildProposeDropdown();
@@ -150,6 +159,8 @@
     const counts = { type: {}, industry: {}, domain: {}, allTags: {} };
 
     allPackets.forEach(p => {
+      // Exclude Draft packets from sidebar counts for non-token visitors
+      if (!isDraftViewer && p.publishState === 'Draft') return;
       if (p.packetType) counts.type[p.packetType] = (counts.type[p.packetType] || 0) + 1;
       (p.tags.industry || []).forEach(t => { counts.industry[t] = (counts.industry[t] || 0) + 1; });
       (p.tags.technicalDomain || []).forEach(t => { counts.domain[t] = (counts.domain[t] || 0) + 1; });
@@ -219,6 +230,8 @@
     const q = activeFilters.search.toLowerCase();
 
     filteredPackets = allPackets.filter(p => {
+      // Hide Draft packets from non-token visitors
+      if (!isDraftViewer && p.publishState === 'Draft') return false;
       if (activeFilters.publishState && p.publishState !== activeFilters.publishState) return false;
       if (activeFilters.discoverability && p.discoverability !== activeFilters.discoverability) return false;
       if (activeFilters.packetType && p.packetType !== activeFilters.packetType) return false;
@@ -357,7 +370,7 @@
   }
 
   function renderResultsSummary() {
-    const total = allPackets.length;
+    const total = isDraftViewer ? allPackets.length : allPackets.filter(p => p.publishState !== 'Draft').length;
     const shown = filteredPackets.length;
     $resultsSummary.textContent = shown === total
       ? `Showing all ${total} packet${total !== 1 ? 's' : ''}`
@@ -560,8 +573,11 @@
   }
 
   function renderResourceSection(title, resources) {
+    // Filter out Draft resources for non-token visitors
+    const visibleResources = isDraftViewer ? resources : resources.filter(r => r.state !== 'Draft');
+    if (visibleResources.length === 0) return '';
     let html = `<div class="modal-section"><h3>${esc(title)}</h3><ul class="resource-list">`;
-    resources.forEach(r => {
+    visibleResources.forEach(r => {
       const icon = RESOURCE_ICONS[r.type] || RESOURCE_ICONS['other'];
       const accessClass = (r.access || 'public');
       const isDraft = r.state === 'Draft';
