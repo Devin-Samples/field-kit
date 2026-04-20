@@ -4,7 +4,7 @@
   'use strict';
 
   // Draft access: only viewers with ?token=<DRAFT_TOKEN> can see Draft packets
-  const DRAFT_TOKEN = 'fieldkit-drafts-2026';
+  const DRAFT_TOKEN = 'drafts';
   const isDraftViewer = new URLSearchParams(window.location.search).get('token') === DRAFT_TOKEN;
 
   let allPackets = [];
