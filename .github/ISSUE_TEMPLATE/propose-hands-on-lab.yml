@@ -1,0 +1,104 @@
+name: "Propose a Hands On Lab"
+description: "Submit a new hands-on lab packet to the Field Kit catalog"
+title: "[Hands On Lab] "
+labels: ["hands-on-lab", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Propose a Hands On Lab Packet
+        Fill out the fields below to propose a new hands-on lab for the Field Kit catalog.
+
+  - type: input
+    id: title
+    attributes:
+      label: Lab Title
+      description: A clear, descriptive name for this hands-on lab
+      placeholder: "e.g., Cloud-Native Modernization Workshop"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What does this lab cover? Who is the target audience?
+      placeholder: "Describe the purpose, scope, and intended audience..."
+    validations:
+      required: true
+
+  - type: input
+    id: maintainer
+    attributes:
+      label: Maintainer
+      description: GitHub username or team responsible
+      placeholder: "@username or team-name"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: publish-state
+    attributes:
+      label: Publish State
+      options:
+        - Draft
+        - Published
+    validations:
+      required: true
+
+  - type: dropdown
+    id: discoverability
+    attributes:
+      label: Discoverability Level
+      options:
+        - Public
+        - Partner
+        - Internal
+    validations:
+      required: true
+
+  - type: textarea
+    id: workshops
+    attributes:
+      label: "Workshop Templates"
+      description: "List workshop templates included in this lab. Provide name, focus area, duration, and link."
+      placeholder: |
+        - [Workshop Name](https://github.com/org/repo/...) - Focus area - Duration
+    validations:
+      required: true
+
+  - type: textarea
+    id: modules
+    attributes:
+      label: "Modules / Challenges"
+      description: "List individual challenge modules. Provide name, difficulty, time, and link."
+      placeholder: |
+        - [Module Name](https://github.com/org/repo/...) - Difficulty - Duration
+
+  - type: input
+    id: technical-domain
+    attributes:
+      label: Technical Domain Tags
+      description: Comma-separated technical domains
+      placeholder: "e.g., Modernization, Security, Testing, DevOps"
+
+  - type: input
+    id: language
+    attributes:
+      label: Language Tags
+      description: Comma-separated programming languages
+      placeholder: "e.g., Java, Python, TypeScript"
+
+  - type: textarea
+    id: setup-resources
+    attributes:
+      label: "Setup / Guide Resources"
+      description: "Links to facilitator guides, setup docs, or repo catalogs"
+      placeholder: |
+        - [Resource Name](https://url) - Description (public/protected)
+
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Anything else reviewers should know?
