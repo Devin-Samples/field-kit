@@ -42,10 +42,13 @@
   document.addEventListener('DOMContentLoaded', async () => {
     cacheDom();
     bindEvents();
-    // Hide Draft filter option for non-token visitors
+    // Hide Draft filter option for non-token visitors; default to Draft if token present
     if (!isDraftViewer) {
       const draftOpt = $stateFilter.querySelector('option[value="Draft"]');
       if (draftOpt) draftOpt.remove();
+    } else {
+      $stateFilter.value = 'Draft';
+      activeFilters.publishState = 'Draft';
     }
     await loadPackets();
     buildSidebar();
