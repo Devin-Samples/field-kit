@@ -711,6 +711,7 @@ body {
 }
 
 .resource-item:last-child { border-bottom: none; }
+.resource-item.resource-draft { opacity: 0.65; }
 
 .resource-icon {
   width: 1.6rem;

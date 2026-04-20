@@ -564,14 +564,21 @@
     resources.forEach(r => {
       const icon = RESOURCE_ICONS[r.type] || RESOURCE_ICONS['other'];
       const accessClass = (r.access || 'public');
+      const isDraft = r.state === 'Draft';
+      const titleHtml = r.url
+        ? `<a href="${esc(r.url)}" target="_blank" rel="noopener" class="resource-title">${esc(r.title)}</a>`
+        : `<span class="resource-title">${esc(r.title)}</span>`;
       html += `
-        <li class="resource-item">
+        <li class="resource-item${isDraft ? ' resource-draft' : ''}">
           <div class="resource-icon">${icon}</div>
           <div class="resource-info">
-            <a href="${esc(r.url)}" target="_blank" rel="noopener" class="resource-title">${esc(r.title)}</a>
+            ${titleHtml}
             ${r.description ? `<div class="resource-desc">${esc(r.description)}</div>` : ''}
           </div>
-          <span class="resource-access ${esc(accessClass)}">${esc(accessClass)}</span>
+          <div style="display:flex;gap:0.4rem;align-items:center">
+            ${isDraft ? '<span class="badge badge-draft">Draft</span>' : ''}
+            <span class="resource-access ${esc(accessClass)}">${esc(accessClass)}</span>
+          </div>
         </li>`;
     });
     html += `</ul></div>`;

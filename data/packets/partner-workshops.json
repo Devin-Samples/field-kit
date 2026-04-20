@@ -64,14 +64,23 @@
         "type": "github-repo",
         "url": "https://github.com/Cognition-Partner-Workshops/workshop-metadata",
         "description": "Central index with repo catalog, modular challenges, workshop templates, and event definitions",
-        "access": "protected"
+        "access": "public"
       },
       {
         "title": "Facilitator Guide",
         "type": "other",
-        "url": "https://github.com/Cognition-Partner-Workshops/workshop-metadata/blob/main/shared/facilitator-guide.md",
+        "url": "",
         "description": "Runtime setup, logistics, and facilitation best practices",
-        "access": "protected"
+        "access": "protected",
+        "state": "Draft"
+      },
+      {
+        "title": "Host Your Own Workshop",
+        "type": "other",
+        "url": "",
+        "description": "Guide for partners to host their own Devin workshop events",
+        "access": "protected",
+        "state": "Draft"
       }
     ]
   }
