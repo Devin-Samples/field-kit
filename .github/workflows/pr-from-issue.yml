@@ -5,7 +5,7 @@ on:
     types: [opened, labeled]
 
 jobs:
-  create-packet-pr:
+  create-hands-on-lab-pr:
     if: contains(github.event.issue.labels.*.name, 'hands-on-lab')
     runs-on: ubuntu-latest
     permissions:
@@ -125,6 +125,164 @@ jobs:
               head: process.env.BRANCH,
               base: 'main',
               body: `Adds the **${process.env.PACKET_TITLE}** packet to the Field Kit catalog.\n\nCreated from issue #${process.env.ISSUE_NUMBER}.\n\nFile: \`data/packets/${process.env.PACKET_FILENAME}\``
+            });
+            core.exportVariable('PR_NUMBER', pr.number.toString());
+            core.exportVariable('PR_URL', pr.html_url);
+
+      - name: Comment on issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: parseInt(process.env.ISSUE_NUMBER),
+              body: `A pull request has been created to add **${process.env.PACKET_TITLE}** to the catalog.\n\nReview and merge to publish: ${process.env.PR_URL}\n\nFile: \`data/packets/${process.env.PACKET_FILENAME}\``
+            });
+
+      - name: Add label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: parseInt(process.env.ISSUE_NUMBER),
+              labels: ['pr-created']
+            });
+
+  create-demo-pr:
+    if: contains(github.event.issue.labels.*.name, 'demos')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Parse issue and create packet
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const body = issue.body || '';
+
+            // Parse GitHub Issue Form fields (### Label\n\nValue format)
+            function parseField(label) {
+              const regex = new RegExp(`### ${label}\\s*\\n\\n([\\s\\S]*?)(?=\\n### |$)`);
+              const match = body.match(regex);
+              return match ? match[1].trim() : '';
+            }
+
+            function parseCSV(label) {
+              const val = parseField(label);
+              return val ? val.split(',').map(s => s.trim()).filter(Boolean) : [];
+            }
+
+            const title = parseField('Demo Title');
+            const description = parseField('Description');
+            const maintainer = parseField('Maintainer').replace(/^@/, '');
+            const products = parseField('Products');
+            const demoLevel = parseField('Demo Level');
+            const technicalDomain = parseCSV('Technical Domain Tags');
+            const language = parseCSV('Language Tags');
+
+            if (!title) {
+              core.setFailed('Could not parse Demo Title from issue body');
+              return;
+            }
+
+            // Generate kebab-case ID from title
+            const id = title.toLowerCase()
+              .replace(/[^a-z0-9\s-]/g, '')
+              .replace(/\s+/g, '-')
+              .replace(/-+/g, '-')
+              .replace(/^-|-$/g, '');
+
+            const today = new Date().toISOString().split('T')[0];
+
+            // Parse products (multi-select comes as comma-separated)
+            const productList = products
+              ? products.split(',').map(s => s.trim()).filter(Boolean)
+              : [];
+
+            // Build custom tags
+            const customTags = ['demo'];
+            if (demoLevel && demoLevel !== 'N/A' && demoLevel !== 'None') {
+              customTags.push(demoLevel + ' demo');
+            }
+
+            const packet = {
+              id: id,
+              title: title,
+              packetType: 'Demo',
+              issueTemplate: 'propose-demo.yml',
+              description: description,
+              maintainer: maintainer,
+              created: today,
+              updated: today,
+              issueNumber: issue.number,
+              publishState: 'Published',
+              discoverability: 'Partner',
+              tags: {
+                industry: [],
+                productLine: productList.length > 0 ? productList : ['Devin'],
+                technicalDomain: technicalDomain,
+                language: language,
+                custom: customTags
+              },
+              contentGroups: [],
+              resources: {}
+            };
+
+            const fs = require('fs');
+            const filename = `${id}.json`;
+            const packetPath = `data/packets/${filename}`;
+
+            // Write packet JSON
+            fs.writeFileSync(packetPath, JSON.stringify(packet, null, 2) + '\n');
+
+            // Update index.json
+            const indexPath = 'data/packets/index.json';
+            const index = JSON.parse(fs.readFileSync(indexPath, 'utf8'));
+            if (!index.includes(filename)) {
+              index.push(filename);
+              fs.writeFileSync(indexPath, JSON.stringify(index, null, 2) + '\n');
+            }
+
+            // Export for later steps
+            core.exportVariable('PACKET_FILENAME', filename);
+            core.exportVariable('PACKET_TITLE', title);
+            core.exportVariable('PACKET_ID', id);
+            core.exportVariable('ISSUE_NUMBER', issue.number.toString());
+
+      - name: Create pull request
+        run: |
+          BRANCH="packet/${PACKET_ID}-from-issue-${ISSUE_NUMBER}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add data/packets/
+          git commit -m "feat: add demo '${PACKET_TITLE}' from issue #${ISSUE_NUMBER}"
+          git push origin "$BRANCH"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+
+      - name: Open PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Add demo: ${process.env.PACKET_TITLE}`,
+              head: process.env.BRANCH,
+              base: 'main',
+              body: `Adds the **${process.env.PACKET_TITLE}** demo to the Field Kit catalog.\n\nCreated from issue #${process.env.ISSUE_NUMBER}.\n\nFile: \`data/packets/${process.env.PACKET_FILENAME}\``
             });
             core.exportVariable('PR_NUMBER', pr.number.toString());
             core.exportVariable('PR_URL', pr.html_url);
