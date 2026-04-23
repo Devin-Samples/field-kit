@@ -1,0 +1,30 @@
+{
+  "id": "test",
+  "title": "test",
+  "packetType": "Hands On Lab",
+  "issueTemplate": "propose-hands-on-lab.yml",
+  "description": "test",
+  "maintainer": "TEST",
+  "created": "2026-04-23",
+  "updated": "2026-04-23",
+  "issueNumber": 10,
+  "publishState": "Published",
+  "discoverability": "Public",
+  "tags": {
+    "industry": [],
+    "productLine": [
+      "Devin"
+    ],
+    "technicalDomain": [
+      "_No response_"
+    ],
+    "language": [
+      "_No response_"
+    ],
+    "custom": [
+      "hands-on-lab"
+    ]
+  },
+  "contentGroups": [],
+  "resources": {}
+}
