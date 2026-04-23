@@ -38,6 +38,26 @@
     'other': '\u{1F4CE}'
   };
 
+  const GITHUB_REPO = 'Devin-Samples/field-kit';
+  const GITHUB_BRANCH = 'main';
+
+  function approveUrl(packet) {
+    // Link to edit the packet file on GitHub — user changes publishState to Published and commits
+    const filename = packet.id + '.json';
+    return `https://github.com/${GITHUB_REPO}/edit/${GITHUB_BRANCH}/data/packets/${filename}`;
+  }
+
+  function rejectUrl(packet) {
+    // Link to delete the packet file on GitHub — creates a commit/PR removing it
+    const filename = packet.id + '.json';
+    return `https://github.com/${GITHUB_REPO}/delete/${GITHUB_BRANCH}/data/packets/${filename}`;
+  }
+
+  function issueUrl(packet) {
+    if (!packet.issueNumber) return null;
+    return `https://github.com/${GITHUB_REPO}/issues/${packet.issueNumber}`;
+  }
+
   // --- Boot ---
   document.addEventListener('DOMContentLoaded', async () => {
     cacheDom();
@@ -305,6 +325,12 @@
             <span>\u{1F464} ${esc(p.maintainer || 'Unknown')}</span>
             <span>\u{1F4C5} ${esc(p.updated || p.created || '')}</span>
           </div>
+          ${isDraftViewer && p.publishState === 'Draft' ? `
+          <div class="draft-actions">
+            <a href="${esc(approveUrl(p))}" target="_blank" rel="noopener" class="btn btn-approve" onclick="event.stopPropagation()">Approve</a>
+            <a href="${esc(rejectUrl(p))}" target="_blank" rel="noopener" class="btn btn-reject" onclick="event.stopPropagation()">Reject</a>
+            ${p.issueNumber ? `<a href="${esc(issueUrl(p))}" target="_blank" rel="noopener" class="btn btn-outline btn-sm" onclick="event.stopPropagation()">#${p.issueNumber}</a>` : ''}
+          </div>` : ''}
         </div>`;
     }).join('');
 
@@ -400,6 +426,12 @@
             <span class="badge ${stateBadge}">${esc(packet.publishState)}</span>
             <span class="badge ${discBadge}">${esc(packet.discoverability)}</span>
           </div>
+          ${isDraftViewer && packet.publishState === 'Draft' ? `
+          <div class="draft-actions" style="margin-top:0.6rem">
+            <a href="${esc(approveUrl(packet))}" target="_blank" rel="noopener" class="btn btn-approve">Approve</a>
+            <a href="${esc(rejectUrl(packet))}" target="_blank" rel="noopener" class="btn btn-reject">Reject</a>
+            ${packet.issueNumber ? `<a href="${esc(issueUrl(packet))}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">View Issue #${packet.issueNumber}</a>` : ''}
+          </div>` : ''}
         </div>
         <button class="modal-close" id="modal-close-btn">&times;</button>
       </div>
