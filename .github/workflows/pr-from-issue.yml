@@ -2,7 +2,7 @@ name: Create Packet PR from Issue
 
 on:
   issues:
-    types: [opened]
+    types: [opened, labeled]
 
 jobs:
   create-packet-pr:
