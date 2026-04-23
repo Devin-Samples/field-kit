@@ -1,7 +1,6 @@
 name: "Propose a Hands On Lab"
 description: "Submit a new hands-on lab packet to the Field Kit catalog"
 title: "[Hands On Lab] "
-labels: ["hands-on-lab", "triage"]
 body:
   - type: markdown
     attributes:
@@ -33,16 +32,6 @@ body:
       label: Maintainer
       description: GitHub username or team responsible
       placeholder: "@username or team-name"
-    validations:
-      required: true
-
-  - type: dropdown
-    id: publish-state
-    attributes:
-      label: Publish State
-      options:
-        - Draft
-        - Published
     validations:
       required: true
 

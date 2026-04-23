@@ -711,7 +711,6 @@ body {
 }
 
 .resource-item:last-child { border-bottom: none; }
-.resource-item.resource-draft { opacity: 0.65; }
 
 .resource-icon {
   width: 1.6rem;
@@ -779,31 +778,6 @@ body {
 
 .site-footer a { color: var(--color-accent); text-decoration: none; }
 .site-footer a:hover { color: #2d5ab8; }
-
-/* ===== Draft Approval Actions ===== */
-.draft-actions {
-  display: flex;
-  gap: 0.4rem;
-  align-items: center;
-  margin-top: 0.6rem;
-}
-
-.btn-approve {
-  background: var(--color-success);
-  color: #ffffff;
-}
-.btn-approve:hover { background: #1aab88; }
-
-.btn-reject {
-  background: var(--color-danger);
-  color: #ffffff;
-}
-.btn-reject:hover { background: #d04233; }
-
-.btn-sm {
-  padding: 0.3rem 0.6rem;
-  font-size: 0.72rem;
-}
 
 @media (max-width: 900px) {
   .content-area { grid-template-columns: 1fr; }

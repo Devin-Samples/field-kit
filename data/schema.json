@@ -50,7 +50,7 @@
     },
     "issueNumber": {
       "type": "integer",
-      "description": "GitHub issue number that originated this packet (set automatically by the draft workflow)"
+      "description": "GitHub issue number that originated this packet (set automatically by the workflow)"
     },
     "publishState": {
       "type": "string",
@@ -219,14 +219,6 @@
             "public",
             "protected"
           ]
-        },
-        "state": {
-          "type": "string",
-          "enum": [
-            "Draft",
-            "Published"
-          ],
-          "description": "Visibility state of this resource (Draft resources are hidden from non-token visitors)"
         }
       }
     }

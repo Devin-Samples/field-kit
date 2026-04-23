@@ -3,10 +3,6 @@
 (function () {
   'use strict';
 
-  // Draft access: only viewers with ?token=<DRAFT_TOKEN> can see Draft packets
-  const DRAFT_TOKEN = 'drafts';
-  const isDraftViewer = new URLSearchParams(window.location.search).get('token') === DRAFT_TOKEN;
-
   let allPackets = [];
   let filteredPackets = [];
   let activeFilters = {
@@ -39,37 +35,11 @@
   };
 
   const GITHUB_REPO = 'Devin-Samples/field-kit';
-  const GITHUB_BRANCH = 'main';
-
-  function approveUrl(packet) {
-    // Link to edit the packet file on GitHub — user changes publishState to Published and commits
-    const filename = packet.id + '.json';
-    return `https://github.com/${GITHUB_REPO}/edit/${GITHUB_BRANCH}/data/packets/${filename}`;
-  }
-
-  function rejectUrl(packet) {
-    // Link to delete the packet file on GitHub — creates a commit/PR removing it
-    const filename = packet.id + '.json';
-    return `https://github.com/${GITHUB_REPO}/delete/${GITHUB_BRANCH}/data/packets/${filename}`;
-  }
-
-  function issueUrl(packet) {
-    if (!packet.issueNumber) return null;
-    return `https://github.com/${GITHUB_REPO}/issues/${packet.issueNumber}`;
-  }
 
   // --- Boot ---
   document.addEventListener('DOMContentLoaded', async () => {
     cacheDom();
     bindEvents();
-    // Hide Draft filter option for non-token visitors; default to Draft if token present
-    if (!isDraftViewer) {
-      const draftOpt = $stateFilter.querySelector('option[value="Draft"]');
-      if (draftOpt) draftOpt.remove();
-    } else {
-      $stateFilter.value = 'Draft';
-      activeFilters.publishState = 'Draft';
-    }
     await loadPackets();
     buildSidebar();
     buildProposeDropdown();
@@ -144,9 +114,8 @@
       );
       allPackets = await Promise.all(promises);
 
-      // Populate type filter dropdown (exclude drafts for non-token visitors)
-      const visibleForTypes = isDraftViewer ? allPackets : allPackets.filter(p => p.publishState !== 'Draft');
-      const types = [...new Set(visibleForTypes.map(p => p.packetType).filter(Boolean))];
+      // Populate type filter dropdown
+      const types = [...new Set(allPackets.map(p => p.packetType).filter(Boolean))];
       types.forEach(t => {
         const opt = document.createElement('option');
         opt.value = t;
@@ -163,7 +132,6 @@
   function buildProposeDropdown() {
     const templateMap = {};
     allPackets.forEach(p => {
-      if (!isDraftViewer && p.publishState === 'Draft') return;
       if (p.packetType && p.issueTemplate) {
         templateMap[p.packetType] = p.issueTemplate;
       }
@@ -184,8 +152,6 @@
     const counts = { type: {}, industry: {}, domain: {}, allTags: {} };
 
     allPackets.forEach(p => {
-      // Exclude Draft packets from sidebar counts for non-token visitors
-      if (!isDraftViewer && p.publishState === 'Draft') return;
       if (p.packetType) counts.type[p.packetType] = (counts.type[p.packetType] || 0) + 1;
       (p.tags.industry || []).forEach(t => { counts.industry[t] = (counts.industry[t] || 0) + 1; });
       (p.tags.technicalDomain || []).forEach(t => { counts.domain[t] = (counts.domain[t] || 0) + 1; });
@@ -255,8 +221,6 @@
     const q = activeFilters.search.toLowerCase();
 
     filteredPackets = allPackets.filter(p => {
-      // Hide Draft packets from non-token visitors
-      if (!isDraftViewer && p.publishState === 'Draft') return false;
       if (activeFilters.publishState && p.publishState !== activeFilters.publishState) return false;
       if (activeFilters.discoverability && p.discoverability !== activeFilters.discoverability) return false;
       if (activeFilters.packetType && p.packetType !== activeFilters.packetType) return false;
@@ -327,12 +291,6 @@
             <span>\u{1F464} ${esc(p.maintainer || 'Unknown')}</span>
             <span>\u{1F4C5} ${esc(p.updated || p.created || '')}</span>
           </div>
-          ${isDraftViewer && p.publishState === 'Draft' ? `
-          <div class="draft-actions">
-            <a href="${esc(approveUrl(p))}" target="_blank" rel="noopener" class="btn btn-approve" onclick="event.stopPropagation()">Approve</a>
-            <a href="${esc(rejectUrl(p))}" target="_blank" rel="noopener" class="btn btn-reject" onclick="event.stopPropagation()">Reject</a>
-            ${p.issueNumber ? `<a href="${esc(issueUrl(p))}" target="_blank" rel="noopener" class="btn btn-outline btn-sm" onclick="event.stopPropagation()">#${p.issueNumber}</a>` : ''}
-          </div>` : ''}
         </div>`;
     }).join('');
 
@@ -401,7 +359,7 @@
   }
 
   function renderResultsSummary() {
-    const total = isDraftViewer ? allPackets.length : allPackets.filter(p => p.publishState !== 'Draft').length;
+    const total = allPackets.length;
     const shown = filteredPackets.length;
     $resultsSummary.textContent = shown === total
       ? `Showing all ${total} packet${total !== 1 ? 's' : ''}`
@@ -428,12 +386,6 @@
             <span class="badge ${stateBadge}">${esc(packet.publishState)}</span>
             <span class="badge ${discBadge}">${esc(packet.discoverability)}</span>
           </div>
-          ${isDraftViewer && packet.publishState === 'Draft' ? `
-          <div class="draft-actions" style="margin-top:0.6rem">
-            <a href="${esc(approveUrl(packet))}" target="_blank" rel="noopener" class="btn btn-approve">Approve</a>
-            <a href="${esc(rejectUrl(packet))}" target="_blank" rel="noopener" class="btn btn-reject">Reject</a>
-            ${packet.issueNumber ? `<a href="${esc(issueUrl(packet))}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">View Issue #${packet.issueNumber}</a>` : ''}
-          </div>` : ''}
         </div>
         <button class="modal-close" id="modal-close-btn">&times;</button>
       </div>
@@ -610,28 +562,22 @@
   }
 
   function renderResourceSection(title, resources) {
-    // Filter out Draft resources for non-token visitors
-    const visibleResources = isDraftViewer ? resources : resources.filter(r => r.state !== 'Draft');
-    if (visibleResources.length === 0) return '';
+    if (resources.length === 0) return '';
     let html = `<div class="modal-section"><h3>${esc(title)}</h3><ul class="resource-list">`;
-    visibleResources.forEach(r => {
+    resources.forEach(r => {
       const icon = RESOURCE_ICONS[r.type] || RESOURCE_ICONS['other'];
       const accessClass = (r.access || 'public');
-      const isDraft = r.state === 'Draft';
       const titleHtml = r.url
         ? `<a href="${esc(r.url)}" target="_blank" rel="noopener" class="resource-title">${esc(r.title)}</a>`
         : `<span class="resource-title">${esc(r.title)}</span>`;
       html += `
-        <li class="resource-item${isDraft ? ' resource-draft' : ''}">
+        <li class="resource-item">
           <div class="resource-icon">${icon}</div>
           <div class="resource-info">
             ${titleHtml}
             ${r.description ? `<div class="resource-desc">${esc(r.description)}</div>` : ''}
           </div>
-          <div style="display:flex;gap:0.4rem;align-items:center">
-            ${isDraft ? '<span class="badge badge-draft">Draft</span>' : ''}
-            <span class="resource-access ${esc(accessClass)}">${esc(accessClass)}</span>
-          </div>
+          <span class="resource-access ${esc(accessClass)}">${esc(accessClass)}</span>
         </li>`;
     });
     html += `</ul></div>`;
