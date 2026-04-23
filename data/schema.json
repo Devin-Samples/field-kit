@@ -25,7 +25,8 @@
       "type": "string",
       "description": "The type of packet (e.g., Hands On Lab). Determines issue template and display.",
       "examples": [
-        "Hands On Lab"
+        "Hands On Lab",
+        "Demo"
       ]
     },
     "issueTemplate": {

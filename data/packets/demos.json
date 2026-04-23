@@ -1,0 +1,30 @@
+{
+  "id": "demos",
+  "title": "Demos",
+  "packetType": "Demo",
+  "issueTemplate": "propose-demo.yml",
+  "description": "Product demonstrations showcasing Devin, Devin for Terminal, and Windsurf capabilities. Includes guided walkthroughs at 101 and 201 levels across multiple technical domains.",
+  "maintainer": "Cognition-Partner-Workshops",
+  "created": "2026-04-23",
+  "updated": "2026-04-23",
+  "publishState": "Published",
+  "discoverability": "Partner",
+  "tags": {
+    "industry": [
+      "Technology",
+      "Cross-Industry"
+    ],
+    "productLine": [
+      "Devin",
+      "Devin for Terminal",
+      "Windsurf"
+    ],
+    "technicalDomain": [],
+    "language": [],
+    "custom": [
+      "demo"
+    ]
+  },
+  "contentGroups": [],
+  "resources": {}
+}
