@@ -35,7 +35,6 @@
   };
 
   const GITHUB_REPO = 'Devin-Samples/field-kit';
-  const GITHUB_BRANCH = 'main';
 
   // --- Boot ---
   document.addEventListener('DOMContentLoaded', async () => {
