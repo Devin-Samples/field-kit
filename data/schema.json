@@ -48,6 +48,10 @@
       "type": "string",
       "format": "date"
     },
+    "issueNumber": {
+      "type": "integer",
+      "description": "GitHub issue number that originated this packet (set automatically by the draft workflow)"
+    },
     "publishState": {
       "type": "string",
       "enum": [
