@@ -124,6 +124,24 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            // Ensure the label exists before adding it
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'draft-created'
+              });
+            } catch (e) {
+              if (e.status === 404) {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: 'draft-created',
+                  color: 'e67e22',
+                  description: 'Draft packet has been created from this issue'
+                });
+              }
+            }
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,

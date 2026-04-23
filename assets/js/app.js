@@ -144,8 +144,9 @@
       );
       allPackets = await Promise.all(promises);
 
-      // Populate type filter dropdown
-      const types = [...new Set(allPackets.map(p => p.packetType).filter(Boolean))];
+      // Populate type filter dropdown (exclude drafts for non-token visitors)
+      const visibleForTypes = isDraftViewer ? allPackets : allPackets.filter(p => p.publishState !== 'Draft');
+      const types = [...new Set(visibleForTypes.map(p => p.packetType).filter(Boolean))];
       types.forEach(t => {
         const opt = document.createElement('option');
         opt.value = t;
@@ -162,6 +163,7 @@
   function buildProposeDropdown() {
     const templateMap = {};
     allPackets.forEach(p => {
+      if (!isDraftViewer && p.publishState === 'Draft') return;
       if (p.packetType && p.issueTemplate) {
         templateMap[p.packetType] = p.issueTemplate;
       }
