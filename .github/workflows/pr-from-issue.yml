@@ -6,7 +6,9 @@ on:
 
 jobs:
   create-packet-pr:
-    if: contains(github.event.issue.labels.*.name, 'hands-on-lab')
+    if: |
+      contains(github.event.issue.labels.*.name, 'hands-on-lab') &&
+      !contains(github.event.issue.labels.*.name, 'pr-created')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -111,7 +113,7 @@ jobs:
           git checkout -b "$BRANCH"
           git add data/packets/
           git commit -m "feat: add packet '${PACKET_TITLE}' from issue #${ISSUE_NUMBER}"
-          git push origin "$BRANCH"
+          git push --force-with-lease origin "$BRANCH"
           echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
 
       - name: Open PR
