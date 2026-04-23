@@ -37,16 +37,6 @@ body:
       required: true
 
   - type: dropdown
-    id: publish-state
-    attributes:
-      label: Publish State
-      options:
-        - Draft
-        - Published
-    validations:
-      required: true
-
-  - type: dropdown
     id: discoverability
     attributes:
       label: Discoverability Level

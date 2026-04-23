@@ -50,12 +50,11 @@
     },
     "issueNumber": {
       "type": "integer",
-      "description": "GitHub issue number that originated this packet (set automatically by the draft workflow)"
+      "description": "GitHub issue number that originated this packet (set automatically by the PR workflow)"
     },
     "publishState": {
       "type": "string",
       "enum": [
-        "Draft",
         "Published",
         "Archived",
         "Deprecated"

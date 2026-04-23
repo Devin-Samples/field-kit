@@ -25,7 +25,7 @@ Each packet is a JSON file in `data/packets/`. See [`data/schema.json`](data/sch
 Key fields:
 - `id` — Unique slug
 - `title` / `description` — Human-readable info
-- `publishState` — Draft, Published, Archived, Deprecated
+- `publishState` — Published, Archived, Deprecated
 - `discoverability` — Internal, Partner, Named Partner, Partner Tier, Public
 - `tags` — industry, productLine, thirdPartySoftware, language, technicalDomain, custom
 - `resources` — labPackage (cognitionEnv / customerEnv), setupGuide, media
@@ -33,7 +33,7 @@ Key fields:
 ## Adding a Packet
 
 ### Via GitHub Issues (recommended)
-Click **"Propose Entry"** in the header to open a pre-filled issue template.
+Click **"Propose Entry"** in the header to open a pre-filled issue template. A pull request will be created automatically — approve and merge it to add the packet to the catalog.
 
 ### Manually
 1. Create a new `.json` file in `data/packets/` following the schema

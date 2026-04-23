@@ -1,15 +1,16 @@
-name: Create Draft Packet from Issue
+name: Create Packet PR from Issue
 
 on:
   issues:
     types: [opened]
 
 jobs:
-  create-draft:
+  create-packet-pr:
     if: contains(github.event.issue.labels.*.name, 'hands-on-lab')
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
       issues: write
 
     steps:
@@ -18,7 +19,7 @@ jobs:
         with:
           ref: main
 
-      - name: Parse issue and create draft packet
+      - name: Parse issue and create packet
         uses: actions/github-script@v7
         with:
           script: |
@@ -68,7 +69,7 @@ jobs:
               created: today,
               updated: today,
               issueNumber: issue.number,
-              publishState: 'Draft',
+              publishState: 'Published',
               discoverability: discoverability,
               tags: {
                 industry: [],
@@ -99,15 +100,34 @@ jobs:
             // Export for later steps
             core.exportVariable('PACKET_FILENAME', filename);
             core.exportVariable('PACKET_TITLE', title);
+            core.exportVariable('PACKET_ID', id);
             core.exportVariable('ISSUE_NUMBER', issue.number.toString());
 
-      - name: Commit draft packet to main
+      - name: Create pull request
         run: |
+          BRANCH="packet/${PACKET_ID}-from-issue-${ISSUE_NUMBER}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
           git add data/packets/
-          git commit -m "feat: add draft packet '${PACKET_TITLE}' from issue #${ISSUE_NUMBER}"
-          git push origin main
+          git commit -m "feat: add packet '${PACKET_TITLE}' from issue #${ISSUE_NUMBER}"
+          git push origin "$BRANCH"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+
+      - name: Open PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Add packet: ${process.env.PACKET_TITLE}`,
+              head: process.env.BRANCH,
+              base: 'main',
+              body: `Adds the **${process.env.PACKET_TITLE}** packet to the Field Kit catalog.\n\nCreated from issue #${process.env.ISSUE_NUMBER}.\n\nFile: \`data/packets/${process.env.PACKET_FILENAME}\``
+            });
+            core.exportVariable('PR_NUMBER', pr.number.toString());
+            core.exportVariable('PR_URL', pr.html_url);
 
       - name: Comment on issue
         uses: actions/github-script@v7
@@ -117,10 +137,10 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: parseInt(process.env.ISSUE_NUMBER),
-              body: `Draft packet **${process.env.PACKET_TITLE}** has been created and is now visible in the [Field Kit draft view](https://${context.repo.owner}.github.io/${context.repo.repo}/?token=drafts).\n\nFile: \`data/packets/${process.env.PACKET_FILENAME}\``
+              body: `A pull request has been created to add **${process.env.PACKET_TITLE}** to the catalog.\n\nReview and merge to publish: ${process.env.PR_URL}\n\nFile: \`data/packets/${process.env.PACKET_FILENAME}\``
             });
 
-      - name: Add draft label
+      - name: Add label
         uses: actions/github-script@v7
         with:
           script: |
@@ -128,5 +148,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: parseInt(process.env.ISSUE_NUMBER),
-              labels: ['draft-created']
+              labels: ['pr-created']
             });

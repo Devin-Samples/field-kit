@@ -71,16 +71,14 @@
         "type": "other",
         "url": "",
         "description": "Runtime setup, logistics, and facilitation best practices",
-        "access": "protected",
-        "state": "Draft"
+        "access": "protected"
       },
       {
         "title": "Host Your Own Workshop",
         "type": "other",
         "url": "",
         "description": "Guide for partners to host their own Devin workshop events",
-        "access": "protected",
-        "state": "Draft"
+        "access": "protected"
       }
     ]
   }
