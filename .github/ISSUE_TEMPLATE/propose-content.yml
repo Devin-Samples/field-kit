@@ -1,19 +1,19 @@
-name: "Propose Content for a Packet"
-description: "Add a new content entry to an existing packet"
+name: "Link Content to a Packet"
+description: "Link a content item to one or more packets in the catalog"
 title: "[Content] "
 labels: ["new-content", "triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        ## Propose Content for an Existing Packet
-        Use this form to add a resource, guide, demo, or other content item to a packet that already exists in the catalog.
+        ## Link Content to a Packet
+        Content items are atoms — they can live in multiple packets. Use this form to link a resource, guide, demo, or other content item to a packet. To link the same content to additional packets, file one issue per packet.
 
   - type: input
     id: packet-id
     attributes:
       label: Target Packet ID
-      description: The ID (slug) of the existing packet this content belongs to
+      description: The ID (slug) of the packet to link this content to
       placeholder: "e.g., partner-workshops, demos"
     validations:
       required: true
