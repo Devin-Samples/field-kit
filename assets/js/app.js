@@ -419,7 +419,7 @@
     }
 
     // Propose Content link
-    const proposeContentUrl = `https://github.com/${GITHUB_REPO}/issues/new?template=propose-content.yml&title=${encodeURIComponent('[Content] ' + packet.title + ': ')}`;
+    const proposeContentUrl = `https://github.com/${GITHUB_REPO}/issues/new?template=propose-content.yml&title=${encodeURIComponent('[Content] ' + packet.title + ': ')}&packet-id=${encodeURIComponent(packet.id)}`;
     html += `
       <div class="modal-section modal-actions">
         <a href="${proposeContentUrl}" target="_blank" rel="noopener" class="btn btn-primary">+ Propose Content</a>
