@@ -21,8 +21,7 @@
 
   let $searchInput, $stateFilter, $discoverFilter, $typeFilter, $packetGrid,
       $activeFilters, $resultsSummary, $modalOverlay, $modalContent,
-      $sidebarIndustry, $sidebarDomain, $sidebarType, $tagCloud,
-      $proposeBtn, $proposeDropdown;
+      $sidebarIndustry, $sidebarDomain, $sidebarType, $tagCloud;
 
   const RESOURCE_ICONS = {
     'github-repo': '\u{1F4C2}',
@@ -42,7 +41,6 @@
     bindEvents();
     await loadPackets();
     buildSidebar();
-    buildProposeDropdown();
     applyFilters();
   });
 
@@ -60,8 +58,6 @@
     $sidebarDomain = document.getElementById('sidebar-domain');
     $sidebarType = document.getElementById('sidebar-type');
     $tagCloud = document.getElementById('tag-cloud');
-    $proposeBtn = document.getElementById('propose-entry-btn');
-    $proposeDropdown = document.getElementById('propose-dropdown');
   }
 
   function bindEvents() {
@@ -93,15 +89,6 @@
       if (e.key === 'Escape') closeModal();
     });
 
-    // Propose dropdown toggle
-    $proposeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      $proposeDropdown.classList.toggle('open');
-    });
-
-    document.addEventListener('click', () => {
-      $proposeDropdown.classList.remove('open');
-    });
   }
 
   // --- Data loading ---
@@ -126,25 +113,6 @@
       console.error('Failed to load packets:', err);
       allPackets = [];
     }
-  }
-
-  // --- Propose dropdown ---
-  function buildProposeDropdown() {
-    const templateMap = {};
-    allPackets.forEach(p => {
-      if (p.packetType && p.issueTemplate) {
-        templateMap[p.packetType] = p.issueTemplate;
-      }
-    });
-
-    let html = '';
-    for (const [type, template] of Object.entries(templateMap)) {
-      html += `<a href="https://github.com/Devin-Samples/field-kit/issues/new?template=${encodeURIComponent(template)}" target="_blank" rel="noopener">${esc(type)}</a>`;
-    }
-    if (!html) {
-      html = '<a href="https://github.com/Devin-Samples/field-kit/issues/new" target="_blank" rel="noopener">General</a>';
-    }
-    $proposeDropdown.innerHTML = html;
   }
 
   // --- Sidebar ---
@@ -313,7 +281,7 @@
       chips.push(chipHtml('Access: ' + activeFilters.discoverability));
     }
     if (activeFilters.packetType) {
-      chips.push(chipHtml('Type: ' + activeFilters.packetType));
+      chips.push(chipHtml('Level: ' + activeFilters.packetType));
     }
     activeFilters.tags.forEach(tag => {
       chips.push(chipHtml(tag));
@@ -333,7 +301,7 @@
         if (label.startsWith('Search: ')) { activeFilters.search = ''; $searchInput.value = ''; }
         else if (label.startsWith('State: ')) { activeFilters.publishState = ''; $stateFilter.value = ''; }
         else if (label.startsWith('Access: ')) { activeFilters.discoverability = ''; $discoverFilter.value = ''; }
-        else if (label.startsWith('Type: ')) { activeFilters.packetType = ''; $typeFilter.value = ''; }
+        else if (label.startsWith('Level: ')) { activeFilters.packetType = ''; $typeFilter.value = ''; }
         else { toggleTag(label); return; }
         buildSidebar();
         applyFilters();
@@ -449,6 +417,13 @@
     if (res.media && res.media.length > 0) {
       html += renderResourceSection('Audio / Video', res.media);
     }
+
+    // Propose Content link
+    const proposeContentUrl = `https://github.com/${GITHUB_REPO}/issues/new?template=propose-content.yml&title=${encodeURIComponent('[Content] ' + packet.title + ': ')}`;
+    html += `
+      <div class="modal-section modal-actions">
+        <a href="${proposeContentUrl}" target="_blank" rel="noopener" class="btn btn-primary">+ Propose Content</a>
+      </div>`;
 
     html += `</div>`;
 

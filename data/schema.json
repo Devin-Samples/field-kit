@@ -23,10 +23,12 @@
     },
     "packetType": {
       "type": "string",
-      "description": "The type of packet (e.g., Hands On Lab). Determines issue template and display.",
-      "examples": [
-        "Hands On Lab",
-        "Demo"
+      "description": "Expertise/audience level. Determines issue template and display.",
+      "enum": [
+        "100 — Sales & General",
+        "200 — Solutioning & Training",
+        "300 — Delivery & Usage",
+        "400 — Debugging & Niche"
       ]
     },
     "issueTemplate": {

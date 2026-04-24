@@ -752,6 +752,13 @@ body {
 .resource-access.public { background: var(--color-success-dim); color: var(--color-success); }
 .resource-access.protected { background: var(--color-warning-dim); color: var(--color-warning); }
 
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+}
+
 .empty-state {
   text-align: center;
   padding: 4rem 2rem;

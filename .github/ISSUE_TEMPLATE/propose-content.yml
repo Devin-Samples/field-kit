@@ -1,0 +1,90 @@
+name: "Propose Content for a Packet"
+description: "Add a new content entry to an existing packet"
+title: "[Content] "
+labels: ["new-content", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Propose Content for an Existing Packet
+        Use this form to add a resource, guide, demo, or other content item to a packet that already exists in the catalog.
+
+  - type: input
+    id: packet-id
+    attributes:
+      label: Target Packet ID
+      description: The ID (slug) of the existing packet this content belongs to
+      placeholder: "e.g., partner-workshops, demos"
+    validations:
+      required: true
+
+  - type: input
+    id: content-title
+    attributes:
+      label: Content Title
+      description: A clear name for this content item
+      placeholder: "e.g., Java Spring Boot Migration Walkthrough"
+    validations:
+      required: true
+
+  - type: textarea
+    id: content-description
+    attributes:
+      label: Description
+      description: What does this content cover?
+      placeholder: "Describe what this content provides..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: content-type
+    attributes:
+      label: Content Type
+      options:
+        - github-repo
+        - html
+        - devin-session
+        - google-doc
+        - video
+        - notion
+        - other
+    validations:
+      required: true
+
+  - type: input
+    id: content-url
+    attributes:
+      label: URL
+      description: Link to the content
+      placeholder: "https://..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: resource-section
+    attributes:
+      label: Resource Section
+      description: Where in the packet should this be filed?
+      options:
+        - "Setup / Guide"
+        - "Lab Package — Cognition Env"
+        - "Lab Package — Customer Env"
+        - "Media"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: access
+    attributes:
+      label: Access Level
+      options:
+        - public
+        - protected
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Anything else reviewers should know?
