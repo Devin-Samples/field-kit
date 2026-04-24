@@ -201,6 +201,10 @@ jobs:
               core.setFailed('Could not parse Target Packet ID from issue body');
               return;
             }
+            if (!/^[a-z0-9][a-z0-9-]*$/.test(packetId)) {
+              core.setFailed('Invalid Packet ID — must be a kebab-case slug (e.g., partner-workshops)');
+              return;
+            }
             if (!contentTitle) {
               core.setFailed('Could not parse Content Title from issue body');
               return;
