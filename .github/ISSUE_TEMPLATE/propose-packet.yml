@@ -26,12 +26,12 @@ body:
         100 — Sales & General (overview decks, positioning, introductory material)
         200 — Solutioning & Training (architecture guides, enablement, learning paths)
         300 — Delivery & Usage (hands-on labs, implementation guides, accelerators)
-        400 — Debugging & Niche (troubleshooting, edge-case docs, expert reference)
+        400 — Expert (troubleshooting, edge-case docs, expert reference)
       options:
         - "100 — Sales & General"
         - "200 — Solutioning & Training"
         - "300 — Delivery & Usage"
-        - "400 — Debugging & Niche"
+        - "400 — Expert"
     validations:
       required: true
 
