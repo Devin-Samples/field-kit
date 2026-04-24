@@ -1,6 +1,6 @@
 # 🧰 Field Kit
 
-**Searchable asset catalog for sales & enablement teams.**
+**Searchable asset catalog for sales, enablement & delivery teams.**
 
 Field Kit is a lightweight, static-site catalog that organizes resources ("Packets") into a searchable, filterable library. Each Packet groups related assets — lab packages, setup guides, demos, and documentation — with rich tagging for discoverability.
 

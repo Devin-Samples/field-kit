@@ -1,8 +1,8 @@
 {
   "id": "partner-workshops",
   "title": "Partner Workshops",
-  "packetType": "Hands On Lab",
-  "issueTemplate": "propose-hands-on-lab.yml",
+  "packetType": "300 — Delivery & Usage",
+  "issueTemplate": "propose-content.yml",
   "description": "Cognition provided codebases and sample prompts for self-paced hands-on labs. For use in Cognition or Partner hosted events. Includes modular challenges across 12 engineering disciplines and reusable workshop templates.",
   "maintainer": "Cognition-Partner-Workshops",
   "created": "2026-04-14",

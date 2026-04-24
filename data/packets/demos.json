@@ -1,8 +1,8 @@
 {
   "id": "demos",
   "title": "Demos",
-  "packetType": "Demo",
-  "issueTemplate": "propose-demo.yml",
+  "packetType": "100 — Sales & General",
+  "issueTemplate": "propose-content.yml",
   "description": "Product demonstrations showcasing Devin, Devin for Terminal, and Windsurf capabilities. Includes guided walkthroughs at 101 and 201 levels across multiple technical domains.",
   "maintainer": "Cognition-Partner-Workshops",
   "created": "2026-04-23",
