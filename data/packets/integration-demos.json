@@ -47,6 +47,27 @@
           "type": "video"
         }
       ]
+    },
+    {
+      "title": "Jira Integration: Java 8 to Java 11 Upgrade",
+      "description": "Migration showcasing Playbooks, Jira Integration and Batch Sessions",
+      "items": [
+        {
+          "title": "Recording",
+          "url": "https://www.loom.com/share/23c97260eda14dd1b99cce906864c6c6",
+          "type": "video"
+        },
+        {
+          "title": "Talk Track",
+          "url": "https://www.notion.so/cognitionai/Java-8-to-Java-11-Upgrade-332785ccc2b380b6b430e129e7f121d8",
+          "type": "notion"
+        },
+        {
+          "title": "Devin Session",
+          "url": "https://app.devin.ai/sessions/4479382737c645d1853dd82f7cf4820f?tab=pr%3A47",
+          "type": "devin-session"
+        }
+      ]
     }
   ],
   "resources": {}
