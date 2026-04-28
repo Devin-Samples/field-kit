@@ -26,30 +26,28 @@
       "integration"
     ]
   },
-  "contentGroups": [],
-  "resources": {
-    "Async Application Development: Linear Integration": [
-      {
-        "title": "Devin Session",
-        "type": "devin-session",
-        "url": "https://app.devin.ai/sessions/1f30c8c7b75c4f6f915f0eede5ac605a",
-        "description": "Auto kickoff at beginning of sprint anything high confidence",
-        "access": "protected"
-      },
-      {
-        "title": "Talk Track",
-        "type": "notion",
-        "url": "https://www.notion.so/cognitionai/Linear-Demo-Script-332785ccc2b38008937ad99f1ff5aeef",
-        "description": "Demo script and talk track",
-        "access": "protected"
-      },
-      {
-        "title": "Recording",
-        "type": "video",
-        "url": "https://www.loom.com/share/59ffdb72dba948df8065ec596620ecfd",
-        "description": "Video recording of the demo",
-        "access": "public"
-      }
-    ]
-  }
+  "contentGroups": [
+    {
+      "title": "Async Application Development: Linear Integration",
+      "description": "Auto kickoff at beginning of sprint anything high confidence",
+      "items": [
+        {
+          "title": "Devin Session",
+          "url": "https://app.devin.ai/sessions/1f30c8c7b75c4f6f915f0eede5ac605a",
+          "type": "devin-session"
+        },
+        {
+          "title": "Talk Track",
+          "url": "https://www.notion.so/cognitionai/Linear-Demo-Script-332785ccc2b38008937ad99f1ff5aeef",
+          "type": "notion"
+        },
+        {
+          "title": "Recording",
+          "url": "https://www.loom.com/share/59ffdb72dba948df8065ec596620ecfd",
+          "type": "video"
+        }
+      ]
+    }
+  ],
+  "resources": {}
 }

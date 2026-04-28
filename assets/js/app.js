@@ -435,8 +435,6 @@
 
     // Traditional resources
     const res = packet.resources || {};
-    const knownLabels = { setupGuide: 'Setup / Technical Guide', media: 'Audio / Video' };
-
     if (res.labPackage) {
       if (res.labPackage.cognitionEnv && res.labPackage.cognitionEnv.length > 0) {
         html += renderResourceSection('Lab Package - Cognition Env', res.labPackage.cognitionEnv);
@@ -445,12 +443,11 @@
         html += renderResourceSection('Lab Package - Customer Env', res.labPackage.customerEnv);
       }
     }
-
-    for (const [key, value] of Object.entries(res)) {
-      if (key === 'labPackage') continue;
-      if (!Array.isArray(value) || value.length === 0) continue;
-      const label = knownLabels[key] || key;
-      html += renderResourceSection(label, value);
+    if (res.setupGuide && res.setupGuide.length > 0) {
+      html += renderResourceSection('Setup / Technical Guide', res.setupGuide);
+    }
+    if (res.media && res.media.length > 0) {
+      html += renderResourceSection('Audio / Video', res.media);
     }
 
     html += `</div>`;
@@ -473,6 +470,20 @@
   async function loadContentGroup(group, groupId, generation) {
     const $items = document.getElementById(groupId + '-items');
     const $count = document.getElementById(groupId + '-count');
+
+    // Handle inline/static items (no fetch needed)
+    if (group.items && group.items.length > 0) {
+      $count.textContent = group.items.length + ' item' + (group.items.length !== 1 ? 's' : '');
+      $items.innerHTML = group.items.map(item => {
+        const icon = RESOURCE_ICONS[item.type] || RESOURCE_ICONS['other'];
+        return `
+          <div class="content-item">
+            <span style="margin-right:0.4rem">${icon}</span>
+            <a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.title)}</a>
+          </div>`;
+      }).join('');
+      return;
+    }
 
     if (!group.sourceUrl) {
       $items.innerHTML = '<div class="loading-spinner">No source configured</div>';
@@ -610,14 +621,12 @@
       count += packet.contentGroups.length;
     }
     const res = packet.resources || {};
-    for (const [key, value] of Object.entries(res)) {
-      if (key === 'labPackage') {
-        count += (value.cognitionEnv || []).length;
-        count += (value.customerEnv || []).length;
-      } else if (Array.isArray(value)) {
-        count += value.length;
-      }
+    if (res.labPackage) {
+      count += (res.labPackage.cognitionEnv || []).length;
+      count += (res.labPackage.customerEnv || []).length;
     }
+    count += (res.setupGuide || []).length;
+    count += (res.media || []).length;
     return count;
   }
 

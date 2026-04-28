@@ -209,25 +209,24 @@ jobs:
               return 'other';
             }
 
-            // Build resource entries for this demo
-            const resources = [];
-            for (const link of links) {
-              resources.push({
+            // Build content group for this demo
+            const contentGroup = {
+              title: title,
+              description: description,
+              items: links.map(link => ({
                 title: link.label,
-                type: inferType(link.url),
                 url: link.url,
-                description: description,
-                access: 'protected'
-              });
-            }
+                type: inferType(link.url)
+              }))
+            };
 
             // Read and update the parent packet
             const fs = require('fs');
             const packetPath = 'data/packets/integration-demos.json';
             const packet = JSON.parse(fs.readFileSync(packetPath, 'utf8'));
 
-            if (!packet.resources) packet.resources = {};
-            packet.resources[title] = resources;
+            if (!packet.contentGroups) packet.contentGroups = [];
+            packet.contentGroups.push(contentGroup);
 
             const today = new Date().toISOString().split('T')[0];
             packet.updated = today;
