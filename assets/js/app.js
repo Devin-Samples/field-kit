@@ -618,7 +618,9 @@
   function countContentItems(packet) {
     let count = 0;
     if (packet.contentGroups) {
-      count += packet.contentGroups.length;
+      packet.contentGroups.forEach(g => {
+        count += (g.items && g.items.length > 0) ? g.items.length : 1;
+      });
     }
     const res = packet.resources || {};
     if (res.labPackage) {
