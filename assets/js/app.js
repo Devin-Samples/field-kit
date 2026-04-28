@@ -435,6 +435,8 @@
 
     // Traditional resources
     const res = packet.resources || {};
+    const knownLabels = { setupGuide: 'Setup / Technical Guide', media: 'Audio / Video' };
+
     if (res.labPackage) {
       if (res.labPackage.cognitionEnv && res.labPackage.cognitionEnv.length > 0) {
         html += renderResourceSection('Lab Package - Cognition Env', res.labPackage.cognitionEnv);
@@ -443,11 +445,12 @@
         html += renderResourceSection('Lab Package - Customer Env', res.labPackage.customerEnv);
       }
     }
-    if (res.setupGuide && res.setupGuide.length > 0) {
-      html += renderResourceSection('Setup / Technical Guide', res.setupGuide);
-    }
-    if (res.media && res.media.length > 0) {
-      html += renderResourceSection('Audio / Video', res.media);
+
+    for (const [key, value] of Object.entries(res)) {
+      if (key === 'labPackage') continue;
+      if (!Array.isArray(value) || value.length === 0) continue;
+      const label = knownLabels[key] || key;
+      html += renderResourceSection(label, value);
     }
 
     html += `</div>`;
@@ -607,12 +610,14 @@
       count += packet.contentGroups.length;
     }
     const res = packet.resources || {};
-    if (res.labPackage) {
-      count += (res.labPackage.cognitionEnv || []).length;
-      count += (res.labPackage.customerEnv || []).length;
+    for (const [key, value] of Object.entries(res)) {
+      if (key === 'labPackage') {
+        count += (value.cognitionEnv || []).length;
+        count += (value.customerEnv || []).length;
+      } else if (Array.isArray(value)) {
+        count += value.length;
+      }
     }
-    count += (res.setupGuide || []).length;
-    count += (res.media || []).length;
     return count;
   }
 

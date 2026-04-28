@@ -28,28 +28,26 @@
   },
   "contentGroups": [],
   "resources": {
-    "setupGuide": [
+    "Async Application Development: Linear Integration": [
       {
-        "title": "Linear Integration - Devin Session",
+        "title": "Devin Session",
         "type": "devin-session",
         "url": "https://app.devin.ai/sessions/1f30c8c7b75c4f6f915f0eede5ac605a",
-        "description": "Async Application Development: Auto kickoff at beginning of sprint anything high confidence",
+        "description": "Auto kickoff at beginning of sprint anything high confidence",
         "access": "protected"
       },
       {
-        "title": "Linear Integration - Talk Track",
+        "title": "Talk Track",
         "type": "notion",
         "url": "https://www.notion.so/cognitionai/Linear-Demo-Script-332785ccc2b38008937ad99f1ff5aeef",
-        "description": "Demo script and talk track for the Linear integration demo",
+        "description": "Demo script and talk track",
         "access": "protected"
-      }
-    ],
-    "media": [
+      },
       {
-        "title": "Linear Integration - Recording",
+        "title": "Recording",
         "type": "video",
         "url": "https://www.loom.com/share/59ffdb72dba948df8065ec596620ecfd",
-        "description": "Video recording of the Linear integration demo",
+        "description": "Video recording of the demo",
         "access": "public"
       }
     ]

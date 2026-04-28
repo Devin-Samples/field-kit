@@ -209,23 +209,16 @@ jobs:
               return 'other';
             }
 
-            // Build new resource entries
-            const newGuides = [];
-            const newMedia = [];
+            // Build resource entries for this demo
+            const resources = [];
             for (const link of links) {
-              const type = inferType(link.url);
-              const resource = {
-                title: `${shortLabel} - ${link.label}`,
-                type: type,
+              resources.push({
+                title: link.label,
+                type: inferType(link.url),
                 url: link.url,
                 description: description,
                 access: 'protected'
-              };
-              if (type === 'video') {
-                newMedia.push(resource);
-              } else {
-                newGuides.push(resource);
-              }
+              });
             }
 
             // Read and update the parent packet
@@ -234,11 +227,7 @@ jobs:
             const packet = JSON.parse(fs.readFileSync(packetPath, 'utf8'));
 
             if (!packet.resources) packet.resources = {};
-            if (!packet.resources.setupGuide) packet.resources.setupGuide = [];
-            if (!packet.resources.media) packet.resources.media = [];
-
-            packet.resources.setupGuide.push(...newGuides);
-            packet.resources.media.push(...newMedia);
+            packet.resources[title] = resources;
 
             const today = new Date().toISOString().split('T')[0];
             packet.updated = today;
