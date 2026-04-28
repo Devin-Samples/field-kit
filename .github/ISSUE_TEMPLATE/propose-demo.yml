@@ -1,13 +1,13 @@
-name: "Propose a Demo"
-description: "Submit a new demo packet to the Field Kit catalog"
-title: "[Demo] "
+name: "Propose an Integration Demo"
+description: "Submit a new integration demo to the Field Kit catalog"
+title: "[Integration Demo] "
 labels: ["demos", "triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        ## Propose a Demo Packet
-        Fill out the fields below to propose a new demo for the Field Kit catalog.
+        ## Propose an Integration Demo
+        Fill out the fields below to propose a new integration demo for the Field Kit catalog.
 
   - type: input
     id: title
