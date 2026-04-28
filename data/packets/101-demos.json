@@ -1,0 +1,29 @@
+{
+  "id": "101-demos",
+  "title": "101 Demos",
+  "packetType": "Demo",
+  "issueTemplate": "propose-demo.yml",
+  "description": "Introductory demos covering foundational Devin capabilities and use cases.",
+  "maintainer": "Cognition-Partner-Workshops",
+  "created": "2026-04-28",
+  "updated": "2026-04-28",
+  "publishState": "Published",
+  "discoverability": "Partner",
+  "tags": {
+    "industry": [
+      "Technology",
+      "Cross-Industry"
+    ],
+    "productLine": [
+      "Devin"
+    ],
+    "technicalDomain": [],
+    "language": [],
+    "custom": [
+      "demo",
+      "101"
+    ]
+  },
+  "contentGroups": [],
+  "resources": {}
+}
