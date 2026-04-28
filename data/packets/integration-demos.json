@@ -1,7 +1,7 @@
 {
   "id": "integration-demos",
   "title": "Integration Demos",
-  "packetType": "Demo",
+  "packetType": "Integration Demo",
   "issueTemplate": "propose-demo.yml",
   "description": "Product integration demos showcasing Devin's capabilities with third-party tools and services.",
   "maintainer": "Cognition-Partner-Workshops",
