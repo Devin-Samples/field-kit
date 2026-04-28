@@ -248,6 +248,7 @@ jobs:
 
             // Export for later steps
             core.exportVariable('PACKET_FILENAME', packetFile);
+            core.exportVariable('PACKET_NAME', packet.title);
             core.exportVariable('PACKET_TITLE', title);
             core.exportVariable('PACKET_ID', id);
             core.exportVariable('ISSUE_NUMBER', issue.number.toString());
@@ -273,7 +274,7 @@ jobs:
               title: `Add demo: ${process.env.PACKET_TITLE}`,
               head: process.env.BRANCH,
               base: 'main',
-              body: `Adds the **${process.env.PACKET_TITLE}** demo to the Integration Demos packet.\n\nCreated from issue #${process.env.ISSUE_NUMBER}.\n\nFile: \`data/packets/${process.env.PACKET_FILENAME}\``
+              body: `Adds the **${process.env.PACKET_TITLE}** demo to the **${process.env.PACKET_NAME}** packet.\n\nCreated from issue #${process.env.ISSUE_NUMBER}.\n\nFile: \`data/packets/${process.env.PACKET_FILENAME}\``
             });
             core.exportVariable('PR_NUMBER', pr.number.toString());
             core.exportVariable('PR_URL', pr.html_url);
