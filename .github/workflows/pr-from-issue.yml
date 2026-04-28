@@ -209,36 +209,24 @@ jobs:
               return 'other';
             }
 
-            // Build new resource entries
-            const newGuides = [];
-            const newMedia = [];
-            for (const link of links) {
-              const type = inferType(link.url);
-              const resource = {
-                title: `${shortLabel} - ${link.label}`,
-                type: type,
+            // Build content group for this demo
+            const contentGroup = {
+              title: title,
+              description: description,
+              items: links.map(link => ({
+                title: link.label,
                 url: link.url,
-                description: description,
-                access: 'protected'
-              };
-              if (type === 'video') {
-                newMedia.push(resource);
-              } else {
-                newGuides.push(resource);
-              }
-            }
+                type: inferType(link.url)
+              }))
+            };
 
             // Read and update the parent packet
             const fs = require('fs');
             const packetPath = 'data/packets/integration-demos.json';
             const packet = JSON.parse(fs.readFileSync(packetPath, 'utf8'));
 
-            if (!packet.resources) packet.resources = {};
-            if (!packet.resources.setupGuide) packet.resources.setupGuide = [];
-            if (!packet.resources.media) packet.resources.media = [];
-
-            packet.resources.setupGuide.push(...newGuides);
-            packet.resources.media.push(...newMedia);
+            if (!packet.contentGroups) packet.contentGroups = [];
+            packet.contentGroups.push(contentGroup);
 
             const today = new Date().toISOString().split('T')[0];
             packet.updated = today;

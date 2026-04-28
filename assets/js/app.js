@@ -471,6 +471,20 @@
     const $items = document.getElementById(groupId + '-items');
     const $count = document.getElementById(groupId + '-count');
 
+    // Handle inline/static items (no fetch needed)
+    if (group.items && group.items.length > 0) {
+      $count.textContent = group.items.length + ' item' + (group.items.length !== 1 ? 's' : '');
+      $items.innerHTML = group.items.map(item => {
+        const icon = RESOURCE_ICONS[item.type] || RESOURCE_ICONS['other'];
+        return `
+          <div class="content-item">
+            <span style="margin-right:0.4rem">${icon}</span>
+            <a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.title)}</a>
+          </div>`;
+      }).join('');
+      return;
+    }
+
     if (!group.sourceUrl) {
       $items.innerHTML = '<div class="loading-spinner">No source configured</div>';
       $count.textContent = '0 items';
@@ -604,7 +618,9 @@
   function countContentItems(packet) {
     let count = 0;
     if (packet.contentGroups) {
-      count += packet.contentGroups.length;
+      packet.contentGroups.forEach(g => {
+        count += (g.items && g.items.length > 0) ? g.items.length : 1;
+      });
     }
     const res = packet.resources || {};
     if (res.labPackage) {
