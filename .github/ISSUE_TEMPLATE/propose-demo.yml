@@ -1,13 +1,13 @@
-name: "Propose an Integration Demo"
-description: "Submit a new integration demo to the Field Kit catalog"
-title: "[Integration Demo] "
+name: "Propose a Demo"
+description: "Submit a new demo to the Field Kit catalog"
+title: "[Demo] "
 labels: ["demos", "triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        ## Propose an Integration Demo
-        Fill out the fields below to propose a new integration demo for the Field Kit catalog.
+        ## Propose a Demo
+        Fill out the fields below to propose a new demo for the Field Kit catalog.
 
   - type: input
     id: title
@@ -50,16 +50,16 @@ body:
       required: true
 
   - type: dropdown
-    id: demo-level
+    id: demo-category
     attributes:
-      label: Demo Level
-      description: Optional difficulty/depth level for this demo
+      label: Demo Category
+      description: Which demo category does this belong to?
       options:
-        - "N/A"
         - "101"
         - "201"
+        - "Integrations"
     validations:
-      required: false
+      required: true
 
   - type: input
     id: technical-domain

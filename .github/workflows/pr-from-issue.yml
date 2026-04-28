@@ -181,6 +181,7 @@ jobs:
 
             const title = parseField('Demo Title');
             const description = parseField('Description');
+            const demoCategory = parseField('Demo Category');
             const guideResources = parseField('Guide / Resources');
 
             if (!title) {
@@ -188,8 +189,13 @@ jobs:
               return;
             }
 
-            // Generate short label from title for resource names
-            const shortLabel = title;
+            // Map demo category to packet file
+            const categoryMap = {
+              '101': '101-demos.json',
+              '201': '201-demos.json',
+              'Integrations': 'integration-demos.json'
+            };
+            const packetFile = categoryMap[demoCategory] || 'integration-demos.json';
 
             // Parse markdown links from Guide / Resources field
             const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
@@ -220,9 +226,9 @@ jobs:
               }))
             };
 
-            // Read and update the parent packet
+            // Read and update the target packet
             const fs = require('fs');
-            const packetPath = 'data/packets/integration-demos.json';
+            const packetPath = `data/packets/${packetFile}`;
             const packet = JSON.parse(fs.readFileSync(packetPath, 'utf8'));
 
             if (!packet.contentGroups) packet.contentGroups = [];
@@ -241,7 +247,7 @@ jobs:
               .replace(/^-|-$/g, '');
 
             // Export for later steps
-            core.exportVariable('PACKET_FILENAME', 'integration-demos.json');
+            core.exportVariable('PACKET_FILENAME', packetFile);
             core.exportVariable('PACKET_TITLE', title);
             core.exportVariable('PACKET_ID', id);
             core.exportVariable('ISSUE_NUMBER', issue.number.toString());

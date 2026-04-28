@@ -1,0 +1,29 @@
+{
+  "id": "201-demos",
+  "title": "201 Demos",
+  "packetType": "Demo",
+  "issueTemplate": "propose-demo.yml",
+  "description": "Advanced demos covering deeper Devin workflows and complex scenarios.",
+  "maintainer": "Cognition-Partner-Workshops",
+  "created": "2026-04-28",
+  "updated": "2026-04-28",
+  "publishState": "Published",
+  "discoverability": "Partner",
+  "tags": {
+    "industry": [
+      "Technology",
+      "Cross-Industry"
+    ],
+    "productLine": [
+      "Devin"
+    ],
+    "technicalDomain": [],
+    "language": [],
+    "custom": [
+      "demo",
+      "201"
+    ]
+  },
+  "contentGroups": [],
+  "resources": {}
+}
