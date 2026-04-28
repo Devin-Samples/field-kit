@@ -165,7 +165,7 @@ jobs:
         with:
           ref: main
 
-      - name: Parse issue and create packet
+      - name: Parse issue and update packet
         uses: actions/github-script@v7
         with:
           script: |
@@ -179,84 +179,81 @@ jobs:
               return match ? match[1].trim() : '';
             }
 
-            function parseCSV(label) {
-              const val = parseField(label);
-              return val ? val.split(',').map(s => s.trim()).filter(Boolean) : [];
-            }
-
             const title = parseField('Demo Title');
             const description = parseField('Description');
-            const maintainer = parseField('Maintainer').replace(/^@/, '');
-            const products = parseField('Products');
-            const demoLevel = parseField('Demo Level');
-            const technicalDomain = parseCSV('Technical Domain Tags');
-            const language = parseCSV('Language Tags');
+            const guideResources = parseField('Guide / Resources');
 
             if (!title) {
               core.setFailed('Could not parse Demo Title from issue body');
               return;
             }
 
-            // Generate kebab-case ID from title
+            // Generate short label from title for resource names
+            const shortLabel = title;
+
+            // Parse markdown links from Guide / Resources field
+            const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+            const links = [];
+            let m;
+            while ((m = linkRegex.exec(guideResources)) !== null) {
+              links.push({ label: m[1].trim(), url: m[2].trim() });
+            }
+
+            // Infer resource type from URL
+            function inferType(url) {
+              if (url.includes('devin.ai/sessions') || url.includes('app.devin.ai')) return 'devin-session';
+              if (url.includes('notion.so')) return 'notion';
+              if (url.includes('loom.com') || url.includes('youtube.com') || url.includes('youtu.be') || url.includes('vimeo.com')) return 'video';
+              if (url.includes('docs.google.com')) return 'google-doc';
+              if (url.includes('github.com')) return 'github-repo';
+              return 'other';
+            }
+
+            // Build new resource entries
+            const newGuides = [];
+            const newMedia = [];
+            for (const link of links) {
+              const type = inferType(link.url);
+              const resource = {
+                title: `${shortLabel} - ${link.label}`,
+                type: type,
+                url: link.url,
+                description: description,
+                access: 'protected'
+              };
+              if (type === 'video') {
+                newMedia.push(resource);
+              } else {
+                newGuides.push(resource);
+              }
+            }
+
+            // Read and update the parent packet
+            const fs = require('fs');
+            const packetPath = 'data/packets/integration-demos.json';
+            const packet = JSON.parse(fs.readFileSync(packetPath, 'utf8'));
+
+            if (!packet.resources) packet.resources = {};
+            if (!packet.resources.setupGuide) packet.resources.setupGuide = [];
+            if (!packet.resources.media) packet.resources.media = [];
+
+            packet.resources.setupGuide.push(...newGuides);
+            packet.resources.media.push(...newMedia);
+
+            const today = new Date().toISOString().split('T')[0];
+            packet.updated = today;
+
+            fs.writeFileSync(packetPath, JSON.stringify(packet, null, 2) + '\n');
+
+            // Generate kebab-case ID from title for branch name
             const id = title.toLowerCase()
               .replace(/[^a-z0-9\s-]/g, '')
               .replace(/\s+/g, '-')
               .replace(/-+/g, '-')
               .replace(/^-|-$/g, '');
 
-            const today = new Date().toISOString().split('T')[0];
-
-            // Parse products (multi-select comes as comma-separated)
-            const productList = products
-              ? products.split(',').map(s => s.trim()).filter(Boolean)
-              : [];
-
-            // Build custom tags
-            const customTags = ['demo'];
-            if (demoLevel && demoLevel !== 'N/A' && demoLevel !== 'None') {
-              customTags.push(demoLevel + ' demo');
-            }
-
-            const packet = {
-              id: id,
-              title: title,
-              packetType: 'Demo',
-              issueTemplate: 'propose-demo.yml',
-              description: description,
-              maintainer: maintainer,
-              created: today,
-              updated: today,
-              issueNumber: issue.number,
-              publishState: 'Published',
-              discoverability: 'Partner',
-              tags: {
-                industry: [],
-                productLine: productList.length > 0 ? productList : ['Devin'],
-                technicalDomain: technicalDomain,
-                language: language,
-                custom: customTags
-              },
-              contentGroups: [],
-              resources: {}
-            };
-
-            const fs = require('fs');
-            const filename = `${id}.json`;
-            const packetPath = `data/packets/${filename}`;
-
-            // Write packet JSON
-            fs.writeFileSync(packetPath, JSON.stringify(packet, null, 2) + '\n');
-
-            // Update index.json
-            const indexPath = 'data/packets/index.json';
-            const index = JSON.parse(fs.readFileSync(indexPath, 'utf8'));
-            if (!index.includes(filename)) {
-              index.push(filename);
-              fs.writeFileSync(indexPath, JSON.stringify(index, null, 2) + '\n');
-            }
-
             // Export for later steps
-            core.exportVariable('PACKET_FILENAME', filename);
+            core.exportVariable('PACKET_FILENAME', 'integration-demos.json');
             core.exportVariable('PACKET_TITLE', title);
             core.exportVariable('PACKET_ID', id);
             core.exportVariable('ISSUE_NUMBER', issue.number.toString());
@@ -282,7 +279,7 @@ jobs:
               title: `Add demo: ${process.env.PACKET_TITLE}`,
               head: process.env.BRANCH,
               base: 'main',
-              body: `Adds the **${process.env.PACKET_TITLE}** demo to the Field Kit catalog.\n\nCreated from issue #${process.env.ISSUE_NUMBER}.\n\nFile: \`data/packets/${process.env.PACKET_FILENAME}\``
+              body: `Adds the **${process.env.PACKET_TITLE}** demo to the Integration Demos packet.\n\nCreated from issue #${process.env.ISSUE_NUMBER}.\n\nFile: \`data/packets/${process.env.PACKET_FILENAME}\``
             });
             core.exportVariable('PR_NUMBER', pr.number.toString());
             core.exportVariable('PR_URL', pr.html_url);
