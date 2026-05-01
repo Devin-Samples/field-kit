@@ -10,24 +10,17 @@
   "publishState": "Published",
   "discoverability": "Partner",
   "tags": {
-    "industry": [
-      "Technology",
-      "Cross-Industry"
-    ],
-    "productLine": [
-      "Devin"
-    ],
+    "industry": [],
+    "productLine": [],
     "technicalDomain": [],
     "language": [],
-    "custom": [
-      "demo",
-      "201"
-    ]
+    "custom": []
   },
   "contentGroups": [
     {
       "title": "From Rough Ideas to Executable Tickets (Linear) with Devin",
       "description": "In this demo, we explore how to bridge the gap between product ideation and engineering execution using Devin. Starting with a broad goal to add research history and context-aware follow-ups to a multi-agent tool. This demo showcases how Devin can transform loose concepts into a highly structured Product Requirements Document (PRD) and generate Linear tickets for each task.",
+      "tags": ["Linear", "PRD", "ticket-generation", "product-planning"],
       "items": [
         {
           "title": "Recording",

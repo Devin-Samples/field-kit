@@ -156,11 +156,16 @@
       (p.tags.industry || []).forEach(t => { counts.industry[t] = (counts.industry[t] || 0) + 1; });
       (p.tags.technicalDomain || []).forEach(t => { counts.domain[t] = (counts.domain[t] || 0) + 1; });
 
+      const allPacketTags = new Set();
       Object.values(p.tags).forEach(arr => {
-        if (Array.isArray(arr)) {
-          arr.forEach(t => { counts.allTags[t] = (counts.allTags[t] || 0) + 1; });
-        }
+        if (Array.isArray(arr)) arr.forEach(t => allPacketTags.add(t));
       });
+      if (p.contentGroups) {
+        p.contentGroups.forEach(g => {
+          if (Array.isArray(g.tags)) g.tags.forEach(t => allPacketTags.add(t));
+        });
+      }
+      allPacketTags.forEach(t => { counts.allTags[t] = (counts.allTags[t] || 0) + 1; });
     });
 
     renderSidebarList($sidebarType, counts.type, 'type');
@@ -231,8 +236,12 @@
       }
 
       if (q) {
+        const contentText = (p.contentGroups || []).map(g =>
+          [g.title || '', g.description || ''].join(' ')
+        ).join(' ');
         const haystack = [
-          p.title, p.description, p.packetType || '', p.maintainer || '', ...getAllTags(p)
+          p.title, p.description, p.packetType || '', p.maintainer || '',
+          ...getAllTags(p), contentText
         ].join(' ').toLowerCase();
         if (!haystack.includes(q)) return false;
       }
@@ -250,6 +259,24 @@
     Object.values(packet.tags).forEach(arr => {
       if (Array.isArray(arr)) tags.push(...arr);
     });
+    // Include content-group-level tags (deduplicated)
+    if (packet.contentGroups) {
+      packet.contentGroups.forEach(g => {
+        if (Array.isArray(g.tags)) {
+          g.tags.forEach(t => { if (!tags.includes(t)) tags.push(t); });
+        }
+      });
+    }
+    return tags;
+  }
+
+  function getContentGroupTags(packet) {
+    const tags = [];
+    if (packet.contentGroups) {
+      packet.contentGroups.forEach(g => {
+        if (Array.isArray(g.tags)) tags.push(...g.tags);
+      });
+    }
     return tags;
   }
 
@@ -268,7 +295,13 @@
     $packetGrid.innerHTML = filteredPackets.map(p => {
       const stateBadge = badgeClass(p.publishState);
       const discBadge = discoverabilityBadge(p.discoverability);
-      const tags = getAllTags(p).slice(0, 6);
+      const packetLevelTags = [];
+      Object.values(p.tags).forEach(arr => {
+        if (Array.isArray(arr)) packetLevelTags.push(...arr);
+      });
+      const cgTags = getContentGroupTags(p);
+      const allTagsList = getAllTags(p);
+      const displayTags = allTagsList.slice(0, 8);
       const contentCount = countContentItems(p);
 
       return `
@@ -283,8 +316,11 @@
           </div>
           <div class="packet-description">${esc(p.description)}</div>
           <div class="packet-tags">
-            ${tags.map(t => `<span class="packet-tag">${esc(t)}</span>`).join('')}
-            ${getAllTags(p).length > 6 ? `<span class="packet-tag">+${getAllTags(p).length - 6} more</span>` : ''}
+            ${displayTags.map(t => {
+              const isCgTag = cgTags.includes(t) && !packetLevelTags.includes(t);
+              return `<span class="packet-tag${isCgTag ? ' content-group-tag' : ''}">${esc(t)}</span>`;
+            }).join('')}
+            ${allTagsList.length > 8 ? `<span class="packet-tag">+${allTagsList.length - 8} more</span>` : ''}
           </div>
           <div class="packet-meta">
             <span>\u{1F4E6} ${contentCount} item${contentCount !== 1 ? 's' : ''}</span>
@@ -398,7 +434,14 @@
         <div class="modal-section">
           <h3>Tags</h3>
           <div class="packet-tags">
-            ${getAllTags(packet).map(t => `<span class="packet-tag">${esc(t)}</span>`).join('')}
+            ${(() => {
+              const pTags = [];
+              Object.values(packet.tags).forEach(arr => { if (Array.isArray(arr)) pTags.push(...arr); });
+              const cgOnly = getContentGroupTags(packet).filter(t => !pTags.includes(t));
+              const unique = [...new Set(cgOnly)];
+              return pTags.map(t => `<span class="packet-tag">${esc(t)}</span>`).join('')
+                + unique.map(t => `<span class="packet-tag content-group-tag">${esc(t)}</span>`).join('');
+            })()}
           </div>
         </div>
 
@@ -416,6 +459,9 @@
       html += `<div class="modal-section"><h3>Content</h3>`;
       packet.contentGroups.forEach((group, idx) => {
         const groupId = 'content-group-' + idx;
+        const cgTagsHtml = Array.isArray(group.tags) && group.tags.length > 0
+          ? `<div class="content-group-tags">${group.tags.map(t => `<span class="packet-tag content-group-tag">${esc(t)}</span>`).join('')}</div>`
+          : '';
         html += `
           <div class="content-group" id="${groupId}">
             <div class="content-group-header" onclick="document.getElementById('${groupId}').classList.toggle('expanded')">
@@ -425,6 +471,7 @@
                 <span class="content-group-toggle">\u25B6</span>
               </div>
             </div>
+            ${cgTagsHtml}
             <div class="content-group-items" id="${groupId}-items">
               <div class="loading-spinner">Loading content...</div>
             </div>

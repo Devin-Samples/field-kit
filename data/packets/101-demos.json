@@ -10,19 +10,11 @@
   "publishState": "Published",
   "discoverability": "Partner",
   "tags": {
-    "industry": [
-      "Technology",
-      "Cross-Industry"
-    ],
-    "productLine": [
-      "Devin"
-    ],
+    "industry": [],
+    "productLine": [],
     "technicalDomain": [],
     "language": [],
-    "custom": [
-      "demo",
-      "101"
-    ]
+    "custom": []
   },
   "contentGroups": [],
   "resources": {}

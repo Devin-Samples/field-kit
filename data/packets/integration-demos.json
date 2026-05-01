@@ -10,26 +10,19 @@
   "publishState": "Published",
   "discoverability": "Partner",
   "tags": {
-    "industry": [
-      "Technology",
-      "Cross-Industry"
-    ],
-    "productLine": [
-      "Devin"
-    ],
+    "industry": [],
+    "productLine": [],
     "technicalDomain": [
       "Integrations"
     ],
     "language": [],
-    "custom": [
-      "demo",
-      "integration"
-    ]
+    "custom": []
   },
   "contentGroups": [
     {
       "title": "Async Application Development: Linear Integration",
       "description": "Auto kickoff at beginning of sprint anything high confidence",
+      "tags": ["Linear", "sprint-automation", "async-development"],
       "items": [
         {
           "title": "Devin Session",
@@ -51,6 +44,7 @@
     {
       "title": "Jira Integration: Java 8 to Java 11 Upgrade",
       "description": "Migration showcasing Playbooks, Jira Integration and Batch Sessions",
+      "tags": ["Jira", "Java", "migration", "playbooks", "batch-sessions"],
       "items": [
         {
           "title": "Recording",

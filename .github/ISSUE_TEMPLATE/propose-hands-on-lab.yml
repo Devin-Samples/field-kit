@@ -66,6 +66,15 @@ body:
         - [Module Name](https://github.com/org/repo/...) - Difficulty - Duration
 
   - type: input
+    id: content-tags
+    attributes:
+      label: Content Tags
+      description: Comma-separated tags for the content groups in this lab (used for filtering)
+      placeholder: "e.g., workshop, modules, challenges, cloud-native"
+    validations:
+      required: true
+
+  - type: input
     id: technical-domain
     attributes:
       label: Technical Domain Tags
