@@ -460,18 +460,12 @@ body {
 
 .packet-tag {
   padding: 0.08rem 0.4rem;
-  background: var(--color-surface-raised);
-  border: 1px solid var(--color-border);
+  background: var(--color-accent-dim);
+  border: 1px solid rgba(57, 105, 202, 0.25);
   border-radius: 99px;
   font-size: 0.65rem;
-  color: var(--color-text-muted);
-  font-weight: 500;
-}
-
-.packet-tag.content-group-tag {
-  background: var(--color-accent-dim);
-  border-color: rgba(57, 105, 202, 0.25);
   color: var(--color-accent);
+  font-weight: 500;
 }
 
 .content-group-tags {

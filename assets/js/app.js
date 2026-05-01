@@ -21,7 +21,7 @@
 
   let $searchInput, $stateFilter, $discoverFilter, $typeFilter, $packetGrid,
       $activeFilters, $resultsSummary, $modalOverlay, $modalContent,
-      $sidebarIndustry, $sidebarDomain, $sidebarType, $tagCloud,
+      $sidebarType, $tagCloud,
       $proposeBtn, $proposeDropdown;
 
   const RESOURCE_ICONS = {
@@ -56,8 +56,6 @@
     $resultsSummary = document.getElementById('results-summary');
     $modalOverlay = document.getElementById('modal-overlay');
     $modalContent = document.getElementById('modal-content');
-    $sidebarIndustry = document.getElementById('sidebar-industry');
-    $sidebarDomain = document.getElementById('sidebar-domain');
     $sidebarType = document.getElementById('sidebar-type');
     $tagCloud = document.getElementById('tag-cloud');
     $proposeBtn = document.getElementById('propose-entry-btn');
@@ -149,29 +147,22 @@
 
   // --- Sidebar ---
   function buildSidebar() {
-    const counts = { type: {}, industry: {}, domain: {}, allTags: {} };
+    const counts = { type: {}, contentTags: {} };
 
     allPackets.forEach(p => {
       if (p.packetType) counts.type[p.packetType] = (counts.type[p.packetType] || 0) + 1;
-      (p.tags.industry || []).forEach(t => { counts.industry[t] = (counts.industry[t] || 0) + 1; });
-      (p.tags.technicalDomain || []).forEach(t => { counts.domain[t] = (counts.domain[t] || 0) + 1; });
 
-      const allPacketTags = new Set();
-      Object.values(p.tags).forEach(arr => {
-        if (Array.isArray(arr)) arr.forEach(t => allPacketTags.add(t));
-      });
+      const cgTags = new Set();
       if (p.contentGroups) {
         p.contentGroups.forEach(g => {
-          if (Array.isArray(g.tags)) g.tags.forEach(t => allPacketTags.add(t));
+          if (Array.isArray(g.tags)) g.tags.forEach(t => cgTags.add(t));
         });
       }
-      allPacketTags.forEach(t => { counts.allTags[t] = (counts.allTags[t] || 0) + 1; });
+      cgTags.forEach(t => { counts.contentTags[t] = (counts.contentTags[t] || 0) + 1; });
     });
 
     renderSidebarList($sidebarType, counts.type, 'type');
-    renderSidebarList($sidebarIndustry, counts.industry, 'tag');
-    renderSidebarList($sidebarDomain, counts.domain, 'tag');
-    renderTagCloud(counts.allTags);
+    renderTagCloud(counts.contentTags);
   }
 
   function renderSidebarList($el, countMap, mode) {
@@ -255,29 +246,13 @@
   }
 
   function getAllTags(packet) {
-    const tags = [];
-    Object.values(packet.tags).forEach(arr => {
-      if (Array.isArray(arr)) tags.push(...arr);
-    });
-    // Include content-group-level tags (deduplicated)
+    const tags = new Set();
     if (packet.contentGroups) {
       packet.contentGroups.forEach(g => {
-        if (Array.isArray(g.tags)) {
-          g.tags.forEach(t => { if (!tags.includes(t)) tags.push(t); });
-        }
+        if (Array.isArray(g.tags)) g.tags.forEach(t => tags.add(t));
       });
     }
-    return tags;
-  }
-
-  function getContentGroupTags(packet) {
-    const tags = [];
-    if (packet.contentGroups) {
-      packet.contentGroups.forEach(g => {
-        if (Array.isArray(g.tags)) tags.push(...g.tags);
-      });
-    }
-    return tags;
+    return [...tags];
   }
 
   // --- Render Packet Cards ---
@@ -295,11 +270,6 @@
     $packetGrid.innerHTML = filteredPackets.map(p => {
       const stateBadge = badgeClass(p.publishState);
       const discBadge = discoverabilityBadge(p.discoverability);
-      const packetLevelTags = [];
-      Object.values(p.tags).forEach(arr => {
-        if (Array.isArray(arr)) packetLevelTags.push(...arr);
-      });
-      const cgTags = getContentGroupTags(p);
       const allTagsList = getAllTags(p);
       const displayTags = allTagsList.slice(0, 8);
       const contentCount = countContentItems(p);
@@ -316,10 +286,7 @@
           </div>
           <div class="packet-description">${esc(p.description)}</div>
           <div class="packet-tags">
-            ${displayTags.map(t => {
-              const isCgTag = cgTags.includes(t) && !packetLevelTags.includes(t);
-              return `<span class="packet-tag${isCgTag ? ' content-group-tag' : ''}">${esc(t)}</span>`;
-            }).join('')}
+            ${displayTags.map(t => `<span class="packet-tag">${esc(t)}</span>`).join('')}
             ${allTagsList.length > 8 ? `<span class="packet-tag">+${allTagsList.length - 8} more</span>` : ''}
           </div>
           <div class="packet-meta">
@@ -434,14 +401,7 @@
         <div class="modal-section">
           <h3>Tags</h3>
           <div class="packet-tags">
-            ${(() => {
-              const pTags = [];
-              Object.values(packet.tags).forEach(arr => { if (Array.isArray(arr)) pTags.push(...arr); });
-              const cgOnly = getContentGroupTags(packet).filter(t => !pTags.includes(t));
-              const unique = [...new Set(cgOnly)];
-              return pTags.map(t => `<span class="packet-tag">${esc(t)}</span>`).join('')
-                + unique.map(t => `<span class="packet-tag content-group-tag">${esc(t)}</span>`).join('');
-            })()}
+            ${getAllTags(packet).map(t => `<span class="packet-tag">${esc(t)}</span>`).join('')}
           </div>
         </div>
 
@@ -460,7 +420,7 @@
       packet.contentGroups.forEach((group, idx) => {
         const groupId = 'content-group-' + idx;
         const cgTagsHtml = Array.isArray(group.tags) && group.tags.length > 0
-          ? `<div class="content-group-tags">${group.tags.map(t => `<span class="packet-tag content-group-tag">${esc(t)}</span>`).join('')}</div>`
+          ? `<div class="content-group-tags">${group.tags.map(t => `<span class="packet-tag">${esc(t)}</span>`).join('')}</div>`
           : '';
         html += `
           <div class="content-group" id="${groupId}">

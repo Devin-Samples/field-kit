@@ -12,23 +12,8 @@
   "tags": {
     "industry": [],
     "productLine": [],
-    "technicalDomain": [
-      "Modernization",
-      "Migration",
-      "Security",
-      "Testing",
-      "DevOps",
-      "Cloud Infrastructure",
-      "Data Engineering",
-      "AI/ML"
-    ],
-    "language": [
-      "Java",
-      "Python",
-      "TypeScript",
-      "C#",
-      "COBOL"
-    ],
+    "technicalDomain": [],
+    "language": [],
     "custom": []
   },
   "contentGroups": [

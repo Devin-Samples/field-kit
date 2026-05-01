@@ -69,24 +69,10 @@ body:
     id: content-tags
     attributes:
       label: Content Tags
-      description: Comma-separated tags for the content groups in this lab (used for filtering)
-      placeholder: "e.g., workshop, modules, challenges, cloud-native"
+      description: Comma-separated tags for the content groups in this lab (used for filtering in the catalog)
+      placeholder: "e.g., workshop, modules, challenges, cloud-native, Java"
     validations:
       required: true
-
-  - type: input
-    id: technical-domain
-    attributes:
-      label: Technical Domain Tags
-      description: Comma-separated technical domains
-      placeholder: "e.g., Modernization, Security, Testing, DevOps"
-
-  - type: input
-    id: language
-    attributes:
-      label: Language Tags
-      description: Comma-separated programming languages
-      placeholder: "e.g., Java, Python, TypeScript"
 
   - type: textarea
     id: setup-resources

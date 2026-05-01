@@ -43,8 +43,6 @@ jobs:
             const maintainer = parseField('Maintainer').replace(/^@/, '');
             const discoverability = parseField('Discoverability Level') || 'Internal';
             const contentTags = parseCSV('Content Tags');
-            const technicalDomain = parseCSV('Technical Domain Tags');
-            const language = parseCSV('Language Tags');
             const workshopsText = parseField('Workshop Templates');
             const modulesText = parseField('Modules / Challenges');
 
@@ -94,8 +92,8 @@ jobs:
               tags: {
                 industry: [],
                 productLine: [],
-                technicalDomain: technicalDomain,
-                language: language,
+                technicalDomain: [],
+                language: [],
                 custom: []
               },
               contentGroups: contentGroups,
