@@ -10,7 +10,7 @@
     "packetType",
     "publishState",
     "discoverability",
-    "tags"
+    "category"
   ],
   "properties": {
     "id": {
@@ -69,46 +69,19 @@
         "Public"
       ]
     },
-    "tags": {
-      "type": "object",
-      "properties": {
-        "industry": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "productLine": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "thirdPartySoftware": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "language": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "technicalDomain": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "custom": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
+    "category": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "101",
+          "201",
+          "Integration",
+          "Workshop",
+          "Modules"
+        ]
+      },
+      "description": "Content categories for filtering (e.g. 101, 201, Integration, Workshop, Modules)"
     },
     "contentGroups": {
       "type": "array",
@@ -143,13 +116,6 @@
               "directory-list"
             ],
             "description": "How to parse the fetched content"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Tags specific to this content group, used for fine-grained filtering"
           }
         }
       }

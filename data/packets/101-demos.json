@@ -9,13 +9,7 @@
   "updated": "2026-04-28",
   "publishState": "Published",
   "discoverability": "Partner",
-  "tags": {
-    "industry": [],
-    "productLine": [],
-    "technicalDomain": [],
-    "language": [],
-    "custom": []
-  },
+  "category": ["101"],
   "contentGroups": [],
   "resources": {}
 }

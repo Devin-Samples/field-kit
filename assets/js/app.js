@@ -10,7 +10,7 @@
     publishState: '',
     discoverability: '',
     packetType: '',
-    tags: []
+    categories: []
   };
 
   // Cache for fetched remote content
@@ -21,7 +21,7 @@
 
   let $searchInput, $stateFilter, $discoverFilter, $typeFilter, $packetGrid,
       $activeFilters, $resultsSummary, $modalOverlay, $modalContent,
-      $sidebarIndustry, $sidebarDomain, $sidebarType, $tagCloud,
+      $sidebarType, $sidebarCategory,
       $proposeBtn, $proposeDropdown;
 
   const RESOURCE_ICONS = {
@@ -56,10 +56,8 @@
     $resultsSummary = document.getElementById('results-summary');
     $modalOverlay = document.getElementById('modal-overlay');
     $modalContent = document.getElementById('modal-content');
-    $sidebarIndustry = document.getElementById('sidebar-industry');
-    $sidebarDomain = document.getElementById('sidebar-domain');
     $sidebarType = document.getElementById('sidebar-type');
-    $tagCloud = document.getElementById('tag-cloud');
+    $sidebarCategory = document.getElementById('sidebar-category');
     $proposeBtn = document.getElementById('propose-entry-btn');
     $proposeDropdown = document.getElementById('propose-dropdown');
   }
@@ -149,39 +147,25 @@
 
   // --- Sidebar ---
   function buildSidebar() {
-    const counts = { type: {}, industry: {}, domain: {}, allTags: {} };
+    const counts = { type: {}, category: {} };
 
     allPackets.forEach(p => {
       if (p.packetType) counts.type[p.packetType] = (counts.type[p.packetType] || 0) + 1;
-      (p.tags.industry || []).forEach(t => { counts.industry[t] = (counts.industry[t] || 0) + 1; });
-      (p.tags.technicalDomain || []).forEach(t => { counts.domain[t] = (counts.domain[t] || 0) + 1; });
-
-      const allPacketTags = new Set();
-      Object.values(p.tags).forEach(arr => {
-        if (Array.isArray(arr)) arr.forEach(t => allPacketTags.add(t));
-      });
-      if (p.contentGroups) {
-        p.contentGroups.forEach(g => {
-          if (Array.isArray(g.tags)) g.tags.forEach(t => allPacketTags.add(t));
-        });
-      }
-      allPacketTags.forEach(t => { counts.allTags[t] = (counts.allTags[t] || 0) + 1; });
+      (p.category || []).forEach(c => { counts.category[c] = (counts.category[c] || 0) + 1; });
     });
 
     renderSidebarList($sidebarType, counts.type, 'type');
-    renderSidebarList($sidebarIndustry, counts.industry, 'tag');
-    renderSidebarList($sidebarDomain, counts.domain, 'tag');
-    renderTagCloud(counts.allTags);
+    renderSidebarList($sidebarCategory, counts.category, 'category');
   }
 
   function renderSidebarList($el, countMap, mode) {
     const sorted = Object.entries(countMap).sort((a, b) => b[1] - a[1]);
-    $el.innerHTML = sorted.map(([tag, count]) =>
-      `<li data-value="${esc(tag)}" data-mode="${mode}" class="${
-        (mode === 'type' && activeFilters.packetType === tag) || 
-        (mode === 'tag' && activeFilters.tags.includes(tag)) ? 'active' : ''
+    $el.innerHTML = sorted.map(([value, count]) =>
+      `<li data-value="${esc(value)}" data-mode="${mode}" class="${
+        (mode === 'type' && activeFilters.packetType === value) ||
+        (mode === 'category' && activeFilters.categories.includes(value)) ? 'active' : ''
       }">
-        <span>${esc(tag)}</span>
+        <span>${esc(value)}</span>
         <span class="count">${count}</span>
       </li>`
     ).join('');
@@ -191,34 +175,15 @@
         if (li.dataset.mode === 'type') {
           activeFilters.packetType = activeFilters.packetType === li.dataset.value ? '' : li.dataset.value;
           $typeFilter.value = activeFilters.packetType;
-        } else {
-          const idx = activeFilters.tags.indexOf(li.dataset.value);
-          if (idx === -1) activeFilters.tags.push(li.dataset.value);
-          else activeFilters.tags.splice(idx, 1);
+        } else if (li.dataset.mode === 'category') {
+          const idx = activeFilters.categories.indexOf(li.dataset.value);
+          if (idx === -1) activeFilters.categories.push(li.dataset.value);
+          else activeFilters.categories.splice(idx, 1);
         }
         buildSidebar();
         applyFilters();
       });
     });
-  }
-
-  function renderTagCloud(countMap) {
-    const sorted = Object.entries(countMap).sort((a, b) => b[1] - a[1]);
-    $tagCloud.innerHTML = sorted.map(([tag]) =>
-      `<button class="tag-btn ${activeFilters.tags.includes(tag) ? 'active' : ''}" data-tag="${esc(tag)}">${esc(tag)}</button>`
-    ).join('');
-
-    $tagCloud.querySelectorAll('.tag-btn').forEach(btn => {
-      btn.addEventListener('click', () => toggleTag(btn.dataset.tag));
-    });
-  }
-
-  function toggleTag(tag) {
-    const idx = activeFilters.tags.indexOf(tag);
-    if (idx === -1) activeFilters.tags.push(tag);
-    else activeFilters.tags.splice(idx, 1);
-    buildSidebar();
-    applyFilters();
   }
 
   // --- Filtering ---
@@ -230,9 +195,9 @@
       if (activeFilters.discoverability && p.discoverability !== activeFilters.discoverability) return false;
       if (activeFilters.packetType && p.packetType !== activeFilters.packetType) return false;
 
-      if (activeFilters.tags.length > 0) {
-        const packetTags = getAllTags(p).map(t => t.toLowerCase());
-        if (!activeFilters.tags.every(ft => packetTags.includes(ft.toLowerCase()))) return false;
+      if (activeFilters.categories.length > 0) {
+        const packetCategories = (p.category || []).map(c => c.toLowerCase());
+        if (!activeFilters.categories.some(fc => packetCategories.includes(fc.toLowerCase()))) return false;
       }
 
       if (q) {
@@ -241,7 +206,7 @@
         ).join(' ');
         const haystack = [
           p.title, p.description, p.packetType || '', p.maintainer || '',
-          ...getAllTags(p), contentText
+          ...(p.category || []), contentText
         ].join(' ').toLowerCase();
         if (!haystack.includes(q)) return false;
       }
@@ -254,31 +219,7 @@
     renderResultsSummary();
   }
 
-  function getAllTags(packet) {
-    const tags = [];
-    Object.values(packet.tags).forEach(arr => {
-      if (Array.isArray(arr)) tags.push(...arr);
-    });
-    // Include content-group-level tags (deduplicated)
-    if (packet.contentGroups) {
-      packet.contentGroups.forEach(g => {
-        if (Array.isArray(g.tags)) {
-          g.tags.forEach(t => { if (!tags.includes(t)) tags.push(t); });
-        }
-      });
-    }
-    return tags;
-  }
 
-  function getContentGroupTags(packet) {
-    const tags = [];
-    if (packet.contentGroups) {
-      packet.contentGroups.forEach(g => {
-        if (Array.isArray(g.tags)) tags.push(...g.tags);
-      });
-    }
-    return tags;
-  }
 
   // --- Render Packet Cards ---
   function renderPacketGrid() {
@@ -295,13 +236,7 @@
     $packetGrid.innerHTML = filteredPackets.map(p => {
       const stateBadge = badgeClass(p.publishState);
       const discBadge = discoverabilityBadge(p.discoverability);
-      const packetLevelTags = [];
-      Object.values(p.tags).forEach(arr => {
-        if (Array.isArray(arr)) packetLevelTags.push(...arr);
-      });
-      const cgTags = getContentGroupTags(p);
-      const allTagsList = getAllTags(p);
-      const displayTags = allTagsList.slice(0, 8);
+      const categories = p.category || [];
       const contentCount = countContentItems(p);
 
       return `
@@ -316,11 +251,7 @@
           </div>
           <div class="packet-description">${esc(p.description)}</div>
           <div class="packet-tags">
-            ${displayTags.map(t => {
-              const isCgTag = cgTags.includes(t) && !packetLevelTags.includes(t);
-              return `<span class="packet-tag${isCgTag ? ' content-group-tag' : ''}">${esc(t)}</span>`;
-            }).join('')}
-            ${allTagsList.length > 8 ? `<span class="packet-tag">+${allTagsList.length - 8} more</span>` : ''}
+            ${categories.map(c => `<span class="packet-tag">${esc(c)}</span>`).join('')}
           </div>
           <div class="packet-meta">
             <span>\u{1F4E6} ${contentCount} item${contentCount !== 1 ? 's' : ''}</span>
@@ -351,8 +282,8 @@
     if (activeFilters.packetType) {
       chips.push(chipHtml('Type: ' + activeFilters.packetType));
     }
-    activeFilters.tags.forEach(tag => {
-      chips.push(chipHtml(tag));
+    activeFilters.categories.forEach(cat => {
+      chips.push(chipHtml('Category: ' + cat));
     });
 
     if (chips.length > 0) {
@@ -370,7 +301,11 @@
         else if (label.startsWith('State: ')) { activeFilters.publishState = ''; $stateFilter.value = ''; }
         else if (label.startsWith('Access: ')) { activeFilters.discoverability = ''; $discoverFilter.value = ''; }
         else if (label.startsWith('Type: ')) { activeFilters.packetType = ''; $typeFilter.value = ''; }
-        else { toggleTag(label); return; }
+        else if (label.startsWith('Category: ')) {
+          const cat = label.replace('Category: ', '');
+          const idx = activeFilters.categories.indexOf(cat);
+          if (idx !== -1) activeFilters.categories.splice(idx, 1);
+        }
         buildSidebar();
         applyFilters();
       });
@@ -379,7 +314,7 @@
     const clearBtn = document.getElementById('clear-all-filters');
     if (clearBtn) {
       clearBtn.addEventListener('click', () => {
-        activeFilters = { search: '', publishState: '', discoverability: '', packetType: '', tags: [] };
+        activeFilters = { search: '', publishState: '', discoverability: '', packetType: '', categories: [] };
         $searchInput.value = '';
         $stateFilter.value = '';
         $discoverFilter.value = '';
@@ -432,16 +367,9 @@
         </div>
 
         <div class="modal-section">
-          <h3>Tags</h3>
+          <h3>Category</h3>
           <div class="packet-tags">
-            ${(() => {
-              const pTags = [];
-              Object.values(packet.tags).forEach(arr => { if (Array.isArray(arr)) pTags.push(...arr); });
-              const cgOnly = getContentGroupTags(packet).filter(t => !pTags.includes(t));
-              const unique = [...new Set(cgOnly)];
-              return pTags.map(t => `<span class="packet-tag">${esc(t)}</span>`).join('')
-                + unique.map(t => `<span class="packet-tag content-group-tag">${esc(t)}</span>`).join('');
-            })()}
+            ${(packet.category || []).map(c => `<span class="packet-tag">${esc(c)}</span>`).join('')}
           </div>
         </div>
 
@@ -459,9 +387,6 @@
       html += `<div class="modal-section"><h3>Content</h3>`;
       packet.contentGroups.forEach((group, idx) => {
         const groupId = 'content-group-' + idx;
-        const cgTagsHtml = Array.isArray(group.tags) && group.tags.length > 0
-          ? `<div class="content-group-tags">${group.tags.map(t => `<span class="packet-tag content-group-tag">${esc(t)}</span>`).join('')}</div>`
-          : '';
         html += `
           <div class="content-group" id="${groupId}">
             <div class="content-group-header" onclick="document.getElementById('${groupId}').classList.toggle('expanded')">
@@ -471,7 +396,6 @@
                 <span class="content-group-toggle">\u25B6</span>
               </div>
             </div>
-            ${cgTagsHtml}
             <div class="content-group-items" id="${groupId}-items">
               <div class="loading-spinner">Loading content...</div>
             </div>

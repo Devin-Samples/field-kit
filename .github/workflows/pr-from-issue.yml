@@ -42,9 +42,7 @@ jobs:
             const description = parseField('Description');
             const maintainer = parseField('Maintainer').replace(/^@/, '');
             const discoverability = parseField('Discoverability Level') || 'Internal';
-            const contentTags = parseCSV('Content Tags');
-            const technicalDomain = parseCSV('Technical Domain Tags');
-            const language = parseCSV('Language Tags');
+
             const workshopsText = parseField('Workshop Templates');
             const modulesText = parseField('Modules / Challenges');
 
@@ -64,18 +62,19 @@ jobs:
 
             // Build content groups from workshops and modules if provided
             const contentGroups = [];
+            const category = [];
             if (workshopsText && workshopsText !== '_No response_') {
+              category.push('Workshop');
               contentGroups.push({
                 title: 'Workshops',
-                description: 'Workshop templates for this lab',
-                tags: contentTags
+                description: 'Workshop templates for this lab'
               });
             }
             if (modulesText && modulesText !== '_No response_') {
+              category.push('Modules');
               contentGroups.push({
                 title: 'Modules',
-                description: 'Challenge modules for this lab',
-                tags: contentTags
+                description: 'Challenge modules for this lab'
               });
             }
 
@@ -91,13 +90,7 @@ jobs:
               issueNumber: issue.number,
               publishState: 'Published',
               discoverability: discoverability,
-              tags: {
-                industry: [],
-                productLine: [],
-                technicalDomain: technicalDomain,
-                language: language,
-                custom: []
-              },
+              category: category,
               contentGroups: contentGroups,
               resources: {}
             };
@@ -202,8 +195,7 @@ jobs:
             const title = parseField('Demo Title');
             const description = parseField('Description');
             const demoCategory = parseField('Demo Category');
-            const contentTagsRaw = parseField('Content Tags');
-            const contentTags = contentTagsRaw ? contentTagsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+
             const guideResources = parseField('Guide / Resources');
 
             if (!title) {
@@ -241,7 +233,6 @@ jobs:
             const contentGroup = {
               title: title,
               description: description,
-              tags: contentTags,
               items: links.map(link => ({
                 title: link.label,
                 url: link.url,
