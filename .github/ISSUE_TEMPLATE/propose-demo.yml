@@ -62,6 +62,15 @@ body:
       required: true
 
   - type: input
+    id: content-tags
+    attributes:
+      label: Content Tags
+      description: Comma-separated tags describing this specific demo (used for filtering)
+      placeholder: "e.g., Linear, Jira, migration, sprint-automation"
+    validations:
+      required: true
+
+  - type: input
     id: technical-domain
     attributes:
       label: Technical Domain Tags
