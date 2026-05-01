@@ -468,6 +468,19 @@ body {
   font-weight: 500;
 }
 
+.packet-tag.content-group-tag {
+  background: var(--color-accent-dim);
+  border-color: rgba(57, 105, 202, 0.25);
+  color: var(--color-accent);
+}
+
+.content-group-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem 0;
+}
+
 .packet-meta {
   display: flex;
   gap: 1rem;

@@ -143,6 +143,13 @@
               "directory-list"
             ],
             "description": "How to parse the fetched content"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags specific to this content group, used for fine-grained filtering"
           }
         }
       }
