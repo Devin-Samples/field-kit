@@ -156,20 +156,16 @@
       (p.tags.industry || []).forEach(t => { counts.industry[t] = (counts.industry[t] || 0) + 1; });
       (p.tags.technicalDomain || []).forEach(t => { counts.domain[t] = (counts.domain[t] || 0) + 1; });
 
+      const allPacketTags = new Set();
       Object.values(p.tags).forEach(arr => {
-        if (Array.isArray(arr)) {
-          arr.forEach(t => { counts.allTags[t] = (counts.allTags[t] || 0) + 1; });
-        }
+        if (Array.isArray(arr)) arr.forEach(t => allPacketTags.add(t));
       });
-
-      // Include content-group-level tags
       if (p.contentGroups) {
         p.contentGroups.forEach(g => {
-          if (Array.isArray(g.tags)) {
-            g.tags.forEach(t => { counts.allTags[t] = (counts.allTags[t] || 0) + 1; });
-          }
+          if (Array.isArray(g.tags)) g.tags.forEach(t => allPacketTags.add(t));
         });
       }
+      allPacketTags.forEach(t => { counts.allTags[t] = (counts.allTags[t] || 0) + 1; });
     });
 
     renderSidebarList($sidebarType, counts.type, 'type');
@@ -263,10 +259,12 @@
     Object.values(packet.tags).forEach(arr => {
       if (Array.isArray(arr)) tags.push(...arr);
     });
-    // Include content-group-level tags
+    // Include content-group-level tags (deduplicated)
     if (packet.contentGroups) {
       packet.contentGroups.forEach(g => {
-        if (Array.isArray(g.tags)) tags.push(...g.tags);
+        if (Array.isArray(g.tags)) {
+          g.tags.forEach(t => { if (!tags.includes(t)) tags.push(t); });
+        }
       });
     }
     return tags;
