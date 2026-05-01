@@ -42,7 +42,8 @@ jobs:
             const description = parseField('Description');
             const maintainer = parseField('Maintainer').replace(/^@/, '');
             const discoverability = parseField('Discoverability Level') || 'Internal';
-
+            const contentLabelsRaw = parseField('Content Labels');
+            const contentLabels = contentLabelsRaw ? contentLabelsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
             const workshopsText = parseField('Workshop Templates');
             const modulesText = parseField('Modules / Challenges');
 
@@ -67,14 +68,16 @@ jobs:
               category.push('Workshop');
               contentGroups.push({
                 title: 'Workshops',
-                description: 'Workshop templates for this lab'
+                description: 'Workshop templates for this lab',
+                tags: contentLabels
               });
             }
             if (modulesText && modulesText !== '_No response_') {
               category.push('Modules');
               contentGroups.push({
                 title: 'Modules',
-                description: 'Challenge modules for this lab'
+                description: 'Challenge modules for this lab',
+                tags: contentLabels
               });
             }
 
@@ -195,7 +198,8 @@ jobs:
             const title = parseField('Demo Title');
             const description = parseField('Description');
             const demoCategory = parseField('Demo Category');
-
+            const contentLabelsRaw = parseField('Content Labels');
+            const contentLabels = contentLabelsRaw ? contentLabelsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
             const guideResources = parseField('Guide / Resources');
 
             if (!title) {
@@ -233,6 +237,7 @@ jobs:
             const contentGroup = {
               title: title,
               description: description,
+              tags: contentLabels,
               items: links.map(link => ({
                 title: link.label,
                 url: link.url,

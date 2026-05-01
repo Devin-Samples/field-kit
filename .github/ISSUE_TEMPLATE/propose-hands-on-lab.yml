@@ -65,6 +65,14 @@ body:
       placeholder: |
         - [Module Name](https://github.com/org/repo/...) - Difficulty - Duration
 
+  - type: input
+    id: content-labels
+    attributes:
+      label: Content Labels
+      description: Comma-separated labels for the content groups in this lab (used for filtering)
+      placeholder: "e.g., workshop, modules, challenges, cloud-native"
+    validations:
+      required: true
 
   - type: textarea
     id: setup-resources

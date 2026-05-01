@@ -10,7 +10,8 @@
     publishState: '',
     discoverability: '',
     packetType: '',
-    categories: []
+    categories: [],
+    contentLabels: []
   };
 
   // Cache for fetched remote content
@@ -21,7 +22,7 @@
 
   let $searchInput, $stateFilter, $discoverFilter, $typeFilter, $packetGrid,
       $activeFilters, $resultsSummary, $modalOverlay, $modalContent,
-      $sidebarType, $sidebarCategory,
+      $sidebarType, $sidebarCategory, $sidebarLabels,
       $proposeBtn, $proposeDropdown;
 
   const RESOURCE_ICONS = {
@@ -58,6 +59,7 @@
     $modalContent = document.getElementById('modal-content');
     $sidebarType = document.getElementById('sidebar-type');
     $sidebarCategory = document.getElementById('sidebar-category');
+    $sidebarLabels = document.getElementById('sidebar-labels');
     $proposeBtn = document.getElementById('propose-entry-btn');
     $proposeDropdown = document.getElementById('propose-dropdown');
   }
@@ -147,15 +149,27 @@
 
   // --- Sidebar ---
   function buildSidebar() {
-    const counts = { type: {}, category: {} };
+    const counts = { type: {}, category: {}, labels: {} };
 
     allPackets.forEach(p => {
       if (p.packetType) counts.type[p.packetType] = (counts.type[p.packetType] || 0) + 1;
       (p.category || []).forEach(c => { counts.category[c] = (counts.category[c] || 0) + 1; });
+      getContentLabels(p).forEach(t => { counts.labels[t] = (counts.labels[t] || 0) + 1; });
     });
 
     renderSidebarList($sidebarType, counts.type, 'type');
     renderSidebarList($sidebarCategory, counts.category, 'category');
+    renderSidebarList($sidebarLabels, counts.labels, 'label');
+  }
+
+  function getContentLabels(packet) {
+    const labels = new Set();
+    if (packet.contentGroups) {
+      packet.contentGroups.forEach(g => {
+        if (Array.isArray(g.tags)) g.tags.forEach(t => labels.add(t));
+      });
+    }
+    return [...labels];
   }
 
   function renderSidebarList($el, countMap, mode) {
@@ -163,7 +177,8 @@
     $el.innerHTML = sorted.map(([value, count]) =>
       `<li data-value="${esc(value)}" data-mode="${mode}" class="${
         (mode === 'type' && activeFilters.packetType === value) ||
-        (mode === 'category' && activeFilters.categories.includes(value)) ? 'active' : ''
+        (mode === 'category' && activeFilters.categories.includes(value)) ||
+        (mode === 'label' && activeFilters.contentLabels.includes(value)) ? 'active' : ''
       }">
         <span>${esc(value)}</span>
         <span class="count">${count}</span>
@@ -179,6 +194,10 @@
           const idx = activeFilters.categories.indexOf(li.dataset.value);
           if (idx === -1) activeFilters.categories.push(li.dataset.value);
           else activeFilters.categories.splice(idx, 1);
+        } else if (li.dataset.mode === 'label') {
+          const idx = activeFilters.contentLabels.indexOf(li.dataset.value);
+          if (idx === -1) activeFilters.contentLabels.push(li.dataset.value);
+          else activeFilters.contentLabels.splice(idx, 1);
         }
         buildSidebar();
         applyFilters();
@@ -200,13 +219,18 @@
         if (!activeFilters.categories.some(fc => packetCategories.includes(fc.toLowerCase()))) return false;
       }
 
+      if (activeFilters.contentLabels.length > 0) {
+        const labels = getContentLabels(p).map(t => t.toLowerCase());
+        if (!activeFilters.contentLabels.every(fl => labels.includes(fl.toLowerCase()))) return false;
+      }
+
       if (q) {
         const contentText = (p.contentGroups || []).map(g =>
           [g.title || '', g.description || ''].join(' ')
         ).join(' ');
         const haystack = [
           p.title, p.description, p.packetType || '', p.maintainer || '',
-          ...(p.category || []), contentText
+          ...(p.category || []), ...getContentLabels(p), contentText
         ].join(' ').toLowerCase();
         if (!haystack.includes(q)) return false;
       }
@@ -252,6 +276,7 @@
           <div class="packet-description">${esc(p.description)}</div>
           <div class="packet-tags">
             ${categories.map(c => `<span class="packet-tag">${esc(c)}</span>`).join('')}
+            ${getContentLabels(p).map(t => `<span class="packet-tag content-label">${esc(t)}</span>`).join('')}
           </div>
           <div class="packet-meta">
             <span>\u{1F4E6} ${contentCount} item${contentCount !== 1 ? 's' : ''}</span>
@@ -285,6 +310,9 @@
     activeFilters.categories.forEach(cat => {
       chips.push(chipHtml('Category: ' + cat));
     });
+    activeFilters.contentLabels.forEach(label => {
+      chips.push(chipHtml('Label: ' + label));
+    });
 
     if (chips.length > 0) {
       chips.push(`<button class="clear-all-btn" id="clear-all-filters">Clear all</button>`);
@@ -306,6 +334,11 @@
           const idx = activeFilters.categories.indexOf(cat);
           if (idx !== -1) activeFilters.categories.splice(idx, 1);
         }
+        else if (label.startsWith('Label: ')) {
+          const lbl = label.replace('Label: ', '');
+          const idx = activeFilters.contentLabels.indexOf(lbl);
+          if (idx !== -1) activeFilters.contentLabels.splice(idx, 1);
+        }
         buildSidebar();
         applyFilters();
       });
@@ -314,7 +347,7 @@
     const clearBtn = document.getElementById('clear-all-filters');
     if (clearBtn) {
       clearBtn.addEventListener('click', () => {
-        activeFilters = { search: '', publishState: '', discoverability: '', packetType: '', categories: [] };
+        activeFilters = { search: '', publishState: '', discoverability: '', packetType: '', categories: [], contentLabels: [] };
         $searchInput.value = '';
         $stateFilter.value = '';
         $discoverFilter.value = '';
@@ -387,6 +420,9 @@
       html += `<div class="modal-section"><h3>Content</h3>`;
       packet.contentGroups.forEach((group, idx) => {
         const groupId = 'content-group-' + idx;
+        const cgTagsHtml = Array.isArray(group.tags) && group.tags.length > 0
+          ? `<div class="content-group-tags">${group.tags.map(t => `<span class="packet-tag content-label">${esc(t)}</span>`).join('')}</div>`
+          : '';
         html += `
           <div class="content-group" id="${groupId}">
             <div class="content-group-header" onclick="document.getElementById('${groupId}').classList.toggle('expanded')">
@@ -396,6 +432,7 @@
                 <span class="content-group-toggle">\u25B6</span>
               </div>
             </div>
+            ${cgTagsHtml}
             <div class="content-group-items" id="${groupId}-items">
               <div class="loading-spinner">Loading content...</div>
             </div>

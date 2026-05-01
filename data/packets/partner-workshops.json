@@ -14,6 +14,7 @@
     {
       "title": "Workshops",
       "description": "Reusable workshop templates that compose challenges into structured lab sequences",
+      "tags": ["workshop", "templates", "structured-labs"],
       "sourceUrl": "https://raw.githubusercontent.com/Cognition-Partner-Workshops/workshop-metadata/main/workshops/README.md",
       "baseUrl": "https://github.com/Cognition-Partner-Workshops/workshop-metadata/tree/main/workshops",
       "parser": "markdown-table"
@@ -21,6 +22,7 @@
     {
       "title": "Modules",
       "description": "Self-contained challenge modules organized by engineering discipline (77 modules across 12 categories)",
+      "tags": ["modules", "challenges", "engineering-disciplines"],
       "sourceUrl": "https://raw.githubusercontent.com/Cognition-Partner-Workshops/workshop-metadata/main/modules/README.md",
       "baseUrl": "https://github.com/Cognition-Partner-Workshops/workshop-metadata/tree/main/modules",
       "parser": "markdown-table"

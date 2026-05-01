@@ -116,6 +116,13 @@
               "directory-list"
             ],
             "description": "How to parse the fetched content"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Labels describing this content group, used for content-level filtering"
           }
         }
       }

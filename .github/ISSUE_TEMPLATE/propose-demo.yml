@@ -61,6 +61,14 @@ body:
     validations:
       required: true
 
+  - type: input
+    id: content-labels
+    attributes:
+      label: Content Labels
+      description: Comma-separated labels describing this demo content (used for filtering)
+      placeholder: "e.g., Linear, Jira, migration, sprint-automation"
+    validations:
+      required: true
 
   - type: textarea
     id: guide-resources
