@@ -21,7 +21,7 @@
 
   let $searchInput, $stateFilter, $discoverFilter, $typeFilter, $packetGrid,
       $activeFilters, $resultsSummary, $modalOverlay, $modalContent,
-      $sidebarIndustry, $sidebarDomain, $sidebarType, $tagCloud,
+      $sidebarType, $tagCloud,
       $proposeBtn, $proposeDropdown;
 
   const RESOURCE_ICONS = {
@@ -56,8 +56,6 @@
     $resultsSummary = document.getElementById('results-summary');
     $modalOverlay = document.getElementById('modal-overlay');
     $modalContent = document.getElementById('modal-content');
-    $sidebarIndustry = document.getElementById('sidebar-industry');
-    $sidebarDomain = document.getElementById('sidebar-domain');
     $sidebarType = document.getElementById('sidebar-type');
     $tagCloud = document.getElementById('tag-cloud');
     $proposeBtn = document.getElementById('propose-entry-btn');
@@ -149,17 +147,12 @@
 
   // --- Sidebar ---
   function buildSidebar() {
-    const counts = { type: {}, industry: {}, domain: {}, allTags: {} };
+    const counts = { type: {}, allTags: {} };
 
     allPackets.forEach(p => {
       if (p.packetType) counts.type[p.packetType] = (counts.type[p.packetType] || 0) + 1;
-      (p.tags.industry || []).forEach(t => { counts.industry[t] = (counts.industry[t] || 0) + 1; });
-      (p.tags.technicalDomain || []).forEach(t => { counts.domain[t] = (counts.domain[t] || 0) + 1; });
 
       const allPacketTags = new Set();
-      Object.values(p.tags).forEach(arr => {
-        if (Array.isArray(arr)) arr.forEach(t => allPacketTags.add(t));
-      });
       if (p.contentGroups) {
         p.contentGroups.forEach(g => {
           if (Array.isArray(g.tags)) g.tags.forEach(t => allPacketTags.add(t));
@@ -169,8 +162,6 @@
     });
 
     renderSidebarList($sidebarType, counts.type, 'type');
-    renderSidebarList($sidebarIndustry, counts.industry, 'tag');
-    renderSidebarList($sidebarDomain, counts.domain, 'tag');
     renderTagCloud(counts.allTags);
   }
 
