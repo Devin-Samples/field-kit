@@ -93,10 +93,10 @@ jobs:
               discoverability: discoverability,
               tags: {
                 industry: [],
-                productLine: ['Devin'],
+                productLine: [],
                 technicalDomain: technicalDomain,
                 language: language,
-                custom: ['hands-on-lab']
+                custom: []
               },
               contentGroups: contentGroups,
               resources: {}

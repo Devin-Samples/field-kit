@@ -10,13 +10,8 @@
   "publishState": "Published",
   "discoverability": "Partner",
   "tags": {
-    "industry": [
-      "Technology",
-      "Cross-Industry"
-    ],
-    "productLine": [
-      "Devin"
-    ],
+    "industry": [],
+    "productLine": [],
     "technicalDomain": [
       "Modernization",
       "Migration",
@@ -34,12 +29,7 @@
       "C#",
       "COBOL"
     ],
-    "custom": [
-      "hands-on-lab",
-      "workshop",
-      "partner-enablement",
-      "self-paced"
-    ]
+    "custom": []
   },
   "contentGroups": [
     {
