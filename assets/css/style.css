@@ -474,6 +474,13 @@ body {
   color: var(--color-accent);
 }
 
+.content-group-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem 0;
+}
+
 .content-group-tags {
   display: flex;
   flex-wrap: wrap;

@@ -7,8 +7,6 @@
   "maintainer": "Cognition-Partner-Workshops",
   "created": "2026-04-28",
   "updated": "2026-04-28",
-  "publishState": "Published",
-  "discoverability": "Partner",
   "tags": {
     "industry": [],
     "productLine": [],
@@ -21,6 +19,8 @@
       "title": "From Rough Ideas to Executable Tickets (Linear) with Devin",
       "description": "In this demo, we explore how to bridge the gap between product ideation and engineering execution using Devin. Starting with a broad goal to add research history and context-aware follow-ups to a multi-agent tool. This demo showcases how Devin can transform loose concepts into a highly structured Product Requirements Document (PRD) and generate Linear tickets for each task.",
       "tags": ["Linear", "PRD", "ticket-generation", "product-planning"],
+      "publishState": "Published",
+      "discoverability": "Internal",
       "items": [
         {
           "title": "Recording",

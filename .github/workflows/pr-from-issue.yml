@@ -42,6 +42,7 @@ jobs:
             const description = parseField('Description');
             const maintainer = parseField('Maintainer').replace(/^@/, '');
             const discoverability = parseField('Discoverability Level') || 'Internal';
+            const publishState = parseField('Publish State') || 'Published';
             const contentTags = parseCSV('Content Tags');
             const technicalDomain = parseCSV('Technical Domain Tags');
             const language = parseCSV('Language Tags');
@@ -68,14 +69,18 @@ jobs:
               contentGroups.push({
                 title: 'Workshops',
                 description: 'Workshop templates for this lab',
-                tags: contentTags
+                tags: contentTags,
+                publishState: publishState,
+                discoverability: discoverability
               });
             }
             if (modulesText && modulesText !== '_No response_') {
               contentGroups.push({
                 title: 'Modules',
                 description: 'Challenge modules for this lab',
-                tags: contentTags
+                tags: contentTags,
+                publishState: publishState,
+                discoverability: discoverability
               });
             }
 
@@ -89,8 +94,6 @@ jobs:
               created: today,
               updated: today,
               issueNumber: issue.number,
-              publishState: 'Published',
-              discoverability: discoverability,
               tags: {
                 industry: [],
                 productLine: [],
@@ -202,6 +205,8 @@ jobs:
             const title = parseField('Demo Title');
             const description = parseField('Description');
             const demoCategory = parseField('Demo Category');
+            const discoverability = parseField('Discoverability Level') || 'Internal';
+            const publishState = parseField('Publish State') || 'Published';
             const contentTagsRaw = parseField('Content Tags');
             const contentTags = contentTagsRaw ? contentTagsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
             const guideResources = parseField('Guide / Resources');
@@ -242,6 +247,8 @@ jobs:
               title: title,
               description: description,
               tags: contentTags,
+              publishState: publishState,
+              discoverability: discoverability,
               items: links.map(link => ({
                 title: link.label,
                 url: link.url,

@@ -226,8 +226,14 @@
     const q = activeFilters.search.toLowerCase();
 
     filteredPackets = allPackets.filter(p => {
-      if (activeFilters.publishState && p.publishState !== activeFilters.publishState) return false;
-      if (activeFilters.discoverability && p.discoverability !== activeFilters.discoverability) return false;
+      if (activeFilters.publishState) {
+        const states = getContentGroupField(p, 'publishState');
+        if (states.length > 0 && !states.includes(activeFilters.publishState)) return false;
+      }
+      if (activeFilters.discoverability) {
+        const levels = getContentGroupField(p, 'discoverability');
+        if (levels.length > 0 && !levels.includes(activeFilters.discoverability)) return false;
+      }
       if (activeFilters.packetType && p.packetType !== activeFilters.packetType) return false;
 
       if (activeFilters.tags.length > 0) {
@@ -280,6 +286,16 @@
     return tags;
   }
 
+  function getContentGroupField(packet, field) {
+    const values = [];
+    if (packet.contentGroups) {
+      packet.contentGroups.forEach(g => {
+        if (g[field] && !values.includes(g[field])) values.push(g[field]);
+      });
+    }
+    return values;
+  }
+
   // --- Render Packet Cards ---
   function renderPacketGrid() {
     if (filteredPackets.length === 0) {
@@ -293,8 +309,8 @@
     }
 
     $packetGrid.innerHTML = filteredPackets.map(p => {
-      const stateBadge = badgeClass(p.publishState);
-      const discBadge = discoverabilityBadge(p.discoverability);
+      const states = getContentGroupField(p, 'publishState');
+      const levels = getContentGroupField(p, 'discoverability');
       const packetLevelTags = [];
       Object.values(p.tags).forEach(arr => {
         if (Array.isArray(arr)) packetLevelTags.push(...arr);
@@ -310,8 +326,8 @@
           <div class="packet-card-header">
             <span class="packet-title">${esc(p.title)}</span>
             <div class="packet-badges">
-              <span class="badge ${stateBadge}">${esc(p.publishState)}</span>
-              <span class="badge ${discBadge}">${esc(p.discoverability)}</span>
+              ${states.map(s => `<span class="badge ${badgeClass(s)}">${esc(s)}</span>`).join('')}
+              ${levels.map(d => `<span class="badge ${discoverabilityBadge(d)}">${esc(d)}</span>`).join('')}
             </div>
           </div>
           <div class="packet-description">${esc(p.description)}</div>
@@ -410,8 +426,8 @@
     // Increment generation to invalidate any pending async loads
     const currentGeneration = ++modalGeneration;
 
-    const stateBadge = badgeClass(packet.publishState);
-    const discBadge = discoverabilityBadge(packet.discoverability);
+    const modalStates = getContentGroupField(packet, 'publishState');
+    const modalLevels = getContentGroupField(packet, 'discoverability');
 
     let html = `
       <div class="modal-header">
@@ -419,8 +435,8 @@
           ${packet.packetType ? `<div class="packet-type-label">${esc(packet.packetType)}</div>` : ''}
           <h2>${esc(packet.title)}</h2>
           <div class="packet-badges" style="margin-top:0.4rem">
-            <span class="badge ${stateBadge}">${esc(packet.publishState)}</span>
-            <span class="badge ${discBadge}">${esc(packet.discoverability)}</span>
+            ${modalStates.map(s => `<span class="badge ${badgeClass(s)}">${esc(s)}</span>`).join('')}
+            ${modalLevels.map(d => `<span class="badge ${discoverabilityBadge(d)}">${esc(d)}</span>`).join('')}
           </div>
         </div>
         <button class="modal-close" id="modal-close-btn">&times;</button>
@@ -462,6 +478,9 @@
         const cgTagsHtml = Array.isArray(group.tags) && group.tags.length > 0
           ? `<div class="content-group-tags">${group.tags.map(t => `<span class="packet-tag content-group-tag">${esc(t)}</span>`).join('')}</div>`
           : '';
+        const cgBadgesHtml = (group.publishState || group.discoverability)
+          ? `<div class="content-group-badges">${group.publishState ? `<span class="badge ${badgeClass(group.publishState)}">${esc(group.publishState)}</span>` : ''}${group.discoverability ? `<span class="badge ${discoverabilityBadge(group.discoverability)}">${esc(group.discoverability)}</span>` : ''}</div>`
+          : '';
         html += `
           <div class="content-group" id="${groupId}">
             <div class="content-group-header" onclick="document.getElementById('${groupId}').classList.toggle('expanded')">
@@ -471,6 +490,7 @@
                 <span class="content-group-toggle">\u25B6</span>
               </div>
             </div>
+            ${cgBadgesHtml}
             ${cgTagsHtml}
             <div class="content-group-items" id="${groupId}-items">
               <div class="loading-spinner">Loading content...</div>

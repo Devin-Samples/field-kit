@@ -8,8 +8,6 @@
     "title",
     "description",
     "packetType",
-    "publishState",
-    "discoverability",
     "tags"
   ],
   "properties": {
@@ -52,22 +50,6 @@
     "issueNumber": {
       "type": "integer",
       "description": "GitHub issue number that originated this packet (set automatically by the PR workflow)"
-    },
-    "publishState": {
-      "type": "string",
-      "enum": [
-        "Published",
-        "Archived",
-        "Deprecated"
-      ]
-    },
-    "discoverability": {
-      "type": "string",
-      "enum": [
-        "Internal",
-        "Partner",
-        "Public"
-      ]
     },
     "tags": {
       "type": "object",
@@ -150,6 +132,24 @@
               "type": "string"
             },
             "description": "Tags specific to this content group, used for fine-grained filtering"
+          },
+          "publishState": {
+            "type": "string",
+            "enum": [
+              "Published",
+              "Archived",
+              "Deprecated"
+            ],
+            "description": "Lifecycle status of this content group"
+          },
+          "discoverability": {
+            "type": "string",
+            "enum": [
+              "Internal",
+              "Partner",
+              "Public"
+            ],
+            "description": "Access tier for this content group"
           }
         }
       }

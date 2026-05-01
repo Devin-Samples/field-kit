@@ -61,6 +61,30 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: discoverability
+    attributes:
+      label: Discoverability Level
+      description: Access tier for this content
+      options:
+        - Internal
+        - Partner
+        - Public
+    validations:
+      required: true
+
+  - type: dropdown
+    id: publish-state
+    attributes:
+      label: Publish State
+      description: Lifecycle status for this content
+      options:
+        - Published
+        - Archived
+        - Deprecated
+    validations:
+      required: true
+
   - type: input
     id: content-tags
     attributes:

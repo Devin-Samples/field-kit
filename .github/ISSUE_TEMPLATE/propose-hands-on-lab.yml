@@ -40,10 +40,23 @@ body:
     id: discoverability
     attributes:
       label: Discoverability Level
+      description: Access tier for content in this lab
       options:
         - Public
         - Partner
         - Internal
+    validations:
+      required: true
+
+  - type: dropdown
+    id: publish-state
+    attributes:
+      label: Publish State
+      description: Lifecycle status for content in this lab
+      options:
+        - Published
+        - Archived
+        - Deprecated
     validations:
       required: true
 
