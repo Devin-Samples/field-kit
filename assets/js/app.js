@@ -228,11 +228,11 @@
     filteredPackets = allPackets.filter(p => {
       if (activeFilters.publishState) {
         const states = getContentGroupField(p, 'publishState');
-        if (states.length > 0 && !states.includes(activeFilters.publishState)) return false;
+        if (!states.includes(activeFilters.publishState)) return false;
       }
       if (activeFilters.discoverability) {
         const levels = getContentGroupField(p, 'discoverability');
-        if (levels.length > 0 && !levels.includes(activeFilters.discoverability)) return false;
+        if (!levels.includes(activeFilters.discoverability)) return false;
       }
       if (activeFilters.packetType && p.packetType !== activeFilters.packetType) return false;
 
