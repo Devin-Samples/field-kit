@@ -10,30 +10,15 @@
   "tags": {
     "industry": [],
     "productLine": [],
-    "technicalDomain": [
-      "Modernization",
-      "Migration",
-      "Security",
-      "Testing",
-      "DevOps",
-      "Cloud Infrastructure",
-      "Data Engineering",
-      "AI/ML"
-    ],
-    "language": [
-      "Java",
-      "Python",
-      "TypeScript",
-      "C#",
-      "COBOL"
-    ],
+    "technicalDomain": [],
+    "language": [],
     "custom": []
   },
   "contentGroups": [
     {
       "title": "Workshops",
       "description": "Reusable workshop templates that compose challenges into structured lab sequences",
-      "tags": ["workshop", "templates", "structured-labs"],
+      "tags": ["workshop", "templates", "structured-labs", "Modernization", "Migration", "Security", "Testing", "DevOps", "Cloud Infrastructure", "Data Engineering", "AI/ML", "Java", "Python", "TypeScript", "C#", "COBOL"],
       "publishState": "Published",
       "discoverability": "Partner",
       "sourceUrl": "https://raw.githubusercontent.com/Cognition-Partner-Workshops/workshop-metadata/main/workshops/README.md",
@@ -43,7 +28,7 @@
     {
       "title": "Modules",
       "description": "Self-contained challenge modules organized by engineering discipline (77 modules across 12 categories)",
-      "tags": ["modules", "challenges", "engineering-disciplines"],
+      "tags": ["modules", "challenges", "engineering-disciplines", "Modernization", "Migration", "Security", "Testing", "DevOps", "Cloud Infrastructure", "Data Engineering", "AI/ML", "Java", "Python", "TypeScript", "C#", "COBOL"],
       "publishState": "Published",
       "discoverability": "Partner",
       "sourceUrl": "https://raw.githubusercontent.com/Cognition-Partner-Workshops/workshop-metadata/main/modules/README.md",

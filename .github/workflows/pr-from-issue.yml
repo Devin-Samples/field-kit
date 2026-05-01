@@ -63,13 +63,16 @@ jobs:
 
             const today = new Date().toISOString().split('T')[0];
 
+            // Merge all tags into a single flat array for content groups
+            const allContentTags = [...contentTags, ...technicalDomain, ...language];
+
             // Build content groups from workshops and modules if provided
             const contentGroups = [];
             if (workshopsText && workshopsText !== '_No response_') {
               contentGroups.push({
                 title: 'Workshops',
                 description: 'Workshop templates for this lab',
-                tags: contentTags,
+                tags: allContentTags,
                 publishState: publishState,
                 discoverability: discoverability
               });
@@ -78,7 +81,7 @@ jobs:
               contentGroups.push({
                 title: 'Modules',
                 description: 'Challenge modules for this lab',
-                tags: contentTags,
+                tags: allContentTags,
                 publishState: publishState,
                 discoverability: discoverability
               });
@@ -97,8 +100,8 @@ jobs:
               tags: {
                 industry: [],
                 productLine: [],
-                technicalDomain: technicalDomain,
-                language: language,
+                technicalDomain: [],
+                language: [],
                 custom: []
               },
               contentGroups: contentGroups,
@@ -209,6 +212,10 @@ jobs:
             const publishState = parseField('Publish State') || 'Published';
             const contentTagsRaw = parseField('Content Tags');
             const contentTags = contentTagsRaw ? contentTagsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const technicalDomainRaw = parseField('Technical Domain Tags');
+            const technicalDomain = technicalDomainRaw ? technicalDomainRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const languageRaw = parseField('Language Tags');
+            const language = languageRaw ? languageRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
             const guideResources = parseField('Guide / Resources');
 
             if (!title) {
@@ -242,11 +249,14 @@ jobs:
               return 'other';
             }
 
+            // Merge all tags into a single flat array for content group
+            const allContentTags = [...contentTags, ...technicalDomain, ...language];
+
             // Build content group for this demo
             const contentGroup = {
               title: title,
               description: description,
-              tags: contentTags,
+              tags: allContentTags,
               publishState: publishState,
               discoverability: discoverability,
               items: links.map(link => ({
